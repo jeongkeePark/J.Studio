@@ -41,15 +41,15 @@ const App: React.FC = () => {
 
   return (
     <HashRouter>
-      <div className="min-h-screen flex flex-col" style={{ backgroundColor: theme.primaryColor }}>
+      <div className="min-h-screen flex flex-col transition-colors duration-500" style={{ backgroundColor: theme.primaryColor }}>
         {/* Navigation */}
-        <nav className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md z-50 border-b border-gray-100">
+        <nav className="fixed top-0 left-0 right-0 z-50 border-b border-black/5 bg-transparent backdrop-blur-md">
           <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
             <Link to="/" className={`text-2xl font-bold tracking-tighter ${theme.headingFont === 'serif' ? 'font-serif' : 'font-sans'}`}>
               {theme.siteName}<span style={{ color: theme.accentColor }}>.</span>
             </Link>
 
-            <div className="hidden md:flex items-center space-x-10 text-sm font-medium tracking-widest uppercase">
+            <div className="hidden md:flex items-center space-x-10 text-sm font-medium tracking-widest uppercase text-gray-900">
               <Link to="/" className="hover:opacity-60 transition-opacity">Work</Link>
               <Link to="/bio" className="hover:opacity-60 transition-opacity">Bio</Link>
               <Link to="/admin" className="hover:opacity-60 transition-opacity flex items-center gap-2">
@@ -68,10 +68,10 @@ const App: React.FC = () => {
 
         {/* Mobile Menu Overlay */}
         {isMenuOpen && (
-          <div className="fixed inset-0 bg-white z-40 flex flex-col items-center justify-center space-y-8 text-2xl font-serif">
-            <Link to="/" onClick={() => setIsMenuOpen(false)}>Work</Link>
-            <Link to="/bio" onClick={() => setIsMenuOpen(false)}>Bio</Link>
-            <Link to="/admin" onClick={() => setIsMenuOpen(false)}>Admin</Link>
+          <div className="fixed inset-0 z-[60] flex flex-col items-center justify-center space-y-8 text-2xl" style={{ backgroundColor: theme.primaryColor }}>
+            <Link to="/" onClick={() => setIsMenuOpen(false)} className={theme.headingFont === 'serif' ? 'font-serif' : 'font-sans'}>Work</Link>
+            <Link to="/bio" onClick={() => setIsMenuOpen(false)} className={theme.headingFont === 'serif' ? 'font-serif' : 'font-sans'}>Bio</Link>
+            <Link to="/admin" onClick={() => setIsMenuOpen(false)} className={theme.headingFont === 'serif' ? 'font-serif' : 'font-sans'}>Admin</Link>
             <div className="flex space-x-6 pt-10">
               <a href={theme.socialLinks.instagram} target="_blank"><Instagram size={24} /></a>
               <a href={`mailto:${theme.socialLinks.email}`}><Mail size={24} /></a>
@@ -99,10 +99,10 @@ const App: React.FC = () => {
         </main>
 
         {/* Footer */}
-        <footer className="py-20 px-6 border-t border-gray-100">
+        <footer className="py-20 px-6 border-t border-black/5">
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-end gap-10">
             <div>
-              <h2 className={`text-3xl font-bold mb-4 ${theme.headingFont === 'serif' ? 'font-serif' : ''}`}>
+              <h2 className={`text-3xl font-bold mb-4 ${theme.headingFont === 'serif' ? 'font-serif' : 'font-sans'}`}>
                 Let's create something<br />
                 <span style={{ color: theme.accentColor }}>remarkable</span> together.
               </h2>

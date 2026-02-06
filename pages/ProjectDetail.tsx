@@ -37,11 +37,11 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ projects, theme }) => {
 
   return (
     <div className="animate-in fade-in duration-700 bg-white min-h-screen">
-      {/* Desktop Navigation Buttons - Balanced distance (40rem offset) */}
+      {/* Desktop Navigation Buttons - Improved responsiveness */}
       <div className="hidden xl:block">
         <button 
           onClick={goToPrev}
-          className="fixed left-[calc(50%-40rem)] top-1/2 -translate-y-1/2 p-2 text-gray-200 hover:text-black transition-all hover:scale-110 active:scale-95 z-40 group"
+          className="fixed left-4 2xl:left-[calc(50%-42rem)] top-1/2 -translate-y-1/2 p-2 text-gray-200 hover:text-black transition-all hover:scale-110 active:scale-95 z-40 group"
           aria-label="Previous Project"
         >
           <div className="bg-white/50 backdrop-blur-sm border border-gray-100 p-5 rounded-full shadow-sm group-hover:bg-white group-hover:shadow-xl group-hover:border-gray-200 transition-all">
@@ -52,7 +52,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ projects, theme }) => {
 
         <button 
           onClick={goToNext}
-          className="fixed right-[calc(50%-40rem)] top-1/2 -translate-y-1/2 p-2 text-gray-200 hover:text-black transition-all hover:scale-110 active:scale-95 z-40 group"
+          className="fixed right-4 2xl:right-[calc(50%-42rem)] top-1/2 -translate-y-1/2 p-2 text-gray-200 hover:text-black transition-all hover:scale-110 active:scale-95 z-40 group"
           aria-label="Next Project"
         >
           <div className="bg-white/50 backdrop-blur-sm border border-gray-100 p-5 rounded-full shadow-sm group-hover:bg-white group-hover:shadow-xl group-hover:border-gray-200 transition-all">

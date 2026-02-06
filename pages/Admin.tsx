@@ -1,7 +1,7 @@
 
 import React, { useState, useRef } from 'react';
 import { Project, ThemeConfig, SEOConfig } from '../types';
-import { LayoutGrid, Palette, Globe, Plus, Trash2, Edit2, Check, X, Sparkles, Settings, User, Upload, Image as ImageIcon, Calendar, Loader2, PlusSquare } from 'lucide-react';
+import { LayoutGrid, Palette, Globe, Plus, Trash2, Edit2, Check, X, Sparkles, Settings, User, Upload, Image as ImageIcon, Calendar, Loader2, PlusSquare, Type } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
 
 interface AdminProps {
@@ -53,7 +53,6 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
 
   const handleDeleteProject = (id: string) => {
     if (window.confirm('이 프로젝트를 영구적으로 삭제하시겠습니까?')) {
-      // Functional update with guaranteed new array reference
       setProjects(prev => {
         const filtered = prev.filter(p => p.id !== id);
         return [...filtered]; 
@@ -276,7 +275,7 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
                         <button 
                           onClick={(e) => {
                             e.preventDefault();
-                            e.stopPropagation(); // CRITICAL: Stop parent click event
+                            e.stopPropagation(); 
                             handleDeleteProject(p.id);
                           }} 
                           className="p-3 text-red-400 hover:text-red-600 hover:bg-white rounded-full transition-all shadow-sm" 
@@ -326,38 +325,89 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
           {activeTab === 'theme' && (
             <div className="space-y-10">
               <h3 className="text-2xl font-bold">Home & Theme Settings</h3>
-              <div className="grid grid-cols-1 gap-8 max-w-2xl">
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">메인 히어로 타이틀 (홈 화면 제목)</label>
-                  <input 
-                    type="text" 
-                    value={theme.heroTitle} 
-                    onChange={e => setTheme({...theme, heroTitle: e.target.value})} 
-                    placeholder="예: 감각적인 시각 예술의 기록"
-                    className="w-full p-4 border rounded-xl outline-none focus:ring-2 focus:ring-pink-100 text-xl font-bold" 
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">메인 히어로 서브타이틀</label>
-                  <input 
-                    type="text" 
-                    value={theme.heroSubtitle} 
-                    onChange={e => setTheme({...theme, heroSubtitle: e.target.value})} 
-                    placeholder="제목 아래 보조 설명"
-                    className="w-full p-4 border rounded-xl outline-none focus:ring-2 focus:ring-pink-100" 
-                  />
-                </div>
-                <hr className="my-4" />
-                <div className="grid md:grid-cols-2 gap-8">
+              
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-5xl">
+                {/* Text Content Settings */}
+                <div className="space-y-8">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-gray-400 uppercase">사이트 이름</label>
-                    <input type="text" value={theme.siteName} onChange={e => setTheme({...theme, siteName: e.target.value})} className="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-pink-100" />
+                    <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">메인 히어로 타이틀</label>
+                    <input 
+                      type="text" 
+                      value={theme.heroTitle} 
+                      onChange={e => setTheme({...theme, heroTitle: e.target.value})} 
+                      className="w-full p-4 border rounded-xl outline-none focus:ring-2 focus:ring-pink-100 text-xl font-bold" 
+                    />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-gray-400 uppercase">포인트 색상</label>
-                    <div className="flex items-center gap-4 p-1 border rounded-lg bg-white">
-                      <input type="color" value={theme.accentColor} onChange={e => setTheme({...theme, accentColor: e.target.value})} className="w-12 h-12 rounded cursor-pointer border-none shadow-sm" />
-                      <span className="font-mono text-gray-500 uppercase tracking-widest">{theme.accentColor}</span>
+                    <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">메인 히어로 서브타이틀</label>
+                    <input 
+                      type="text" 
+                      value={theme.heroSubtitle} 
+                      onChange={e => setTheme({...theme, heroSubtitle: e.target.value})} 
+                      className="w-full p-4 border rounded-xl outline-none focus:ring-2 focus:ring-pink-100" 
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">사이트 이름</label>
+                    <input 
+                      type="text" 
+                      value={theme.siteName} 
+                      onChange={e => setTheme({...theme, siteName: e.target.value})} 
+                      className="w-full p-4 border rounded-xl outline-none focus:ring-2 focus:ring-pink-100 font-bold" 
+                    />
+                  </div>
+                </div>
+
+                {/* Visual Settings */}
+                <div className="space-y-10 bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                  {/* Font Selection */}
+                  <div className="space-y-4">
+                    <label className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                      <Type size={14} /> 메인 서체 스타일
+                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                      <button 
+                        onClick={() => setTheme({...theme, headingFont: 'serif'})}
+                        className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${theme.headingFont === 'serif' ? 'border-pink-500 bg-white shadow-md' : 'border-transparent bg-gray-100 hover:bg-gray-200 opacity-60'}`}
+                      >
+                        <span className="text-2xl font-serif font-black">Aa</span>
+                        <span className="text-[10px] font-bold uppercase tracking-widest">Serif Style</span>
+                      </button>
+                      <button 
+                        onClick={() => setTheme({...theme, headingFont: 'sans'})}
+                        className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${theme.headingFont === 'sans' ? 'border-pink-500 bg-white shadow-md' : 'border-transparent bg-gray-100 hover:bg-gray-200 opacity-60'}`}
+                      >
+                        <span className="text-2xl font-sans font-black">Aa</span>
+                        <span className="text-[10px] font-bold uppercase tracking-widest">Sans Style</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Colors */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="space-y-4">
+                      <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">포인트 색상</label>
+                      <div className="flex items-center gap-3 p-2 bg-white rounded-xl border">
+                        <input 
+                          type="color" 
+                          value={theme.accentColor} 
+                          onChange={e => setTheme({...theme, accentColor: e.target.value})} 
+                          className="w-12 h-12 rounded cursor-pointer border-none shadow-sm" 
+                        />
+                        <span className="font-mono text-xs text-gray-500 uppercase">{theme.accentColor}</span>
+                      </div>
+                    </div>
+                    <div className="space-y-4">
+                      <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">전체 배경 색상</label>
+                      <div className="flex items-center gap-3 p-2 bg-white rounded-xl border">
+                        <input 
+                          type="color" 
+                          value={theme.primaryColor} 
+                          onChange={e => setTheme({...theme, primaryColor: e.target.value})} 
+                          className="w-12 h-12 rounded cursor-pointer border-none shadow-sm border border-gray-100" 
+                        />
+                        <span className="font-mono text-xs text-gray-500 uppercase">{theme.primaryColor}</span>
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -17,7 +17,7 @@ const Home: React.FC<HomeProps> = ({ projects, theme }) => {
         <p className="text-xs font-bold tracking-[0.3em] uppercase mb-4" style={{ color: theme.accentColor }}>
           Portfolio Showcase
         </p>
-        <h1 className={`text-5xl md:text-8xl font-black mb-8 leading-[1.1] tracking-tight ${theme.headingFont === 'serif' ? 'font-serif' : ''}`}>
+        <h1 className={`text-5xl md:text-8xl font-black mb-8 leading-[1.1] tracking-tight ${theme.headingFont === 'serif' ? 'font-serif' : 'font-sans'}`}>
           {theme.heroTitle}
         </h1>
         <p className="text-lg md:text-xl text-gray-500 max-w-2xl font-light">
@@ -26,7 +26,7 @@ const Home: React.FC<HomeProps> = ({ projects, theme }) => {
       </section>
 
       {/* Grid Section */}
-      <section className="px-6 py-20 bg-gray-50">
+      <section className="px-6 py-20" style={{ backgroundColor: `${theme.primaryColor}80` /* Add subtle opacity to primary if needed */ }}>
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20">
             {projects.map((project, idx) => (
@@ -47,7 +47,7 @@ const Home: React.FC<HomeProps> = ({ projects, theme }) => {
                     <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 block">
                       {project.category} — {project.date}
                     </span>
-                    <h3 className={`text-2xl font-bold group-hover:opacity-60 transition-opacity ${theme.headingFont === 'serif' ? 'font-serif' : ''}`}>
+                    <h3 className={`text-2xl font-bold group-hover:opacity-60 transition-opacity ${theme.headingFont === 'serif' ? 'font-serif' : 'font-sans'}`}>
                       {project.title}
                     </h3>
                   </div>

@@ -10,9 +10,32 @@
     <style>
         body {
             font-family: 'Noto Sans KR', sans-serif;
+            margin: 0;
+            padding: 0;
         }
         .font-serif {
             font-family: 'Playfair Display', serif;
+        }
+        /* 로딩 중 빈 화면 방지를 위한 기본 스타일 */
+        #root:empty {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: white;
+        }
+        #root:empty::after {
+            content: "";
+            width: 30px;
+            height: 30px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #ec4899;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 <script type="importmap">
@@ -30,5 +53,7 @@
 </head>
 <body class="bg-white text-gray-900 overflow-x-hidden">
     <div id="root"></div>
+    <!-- 애플리케이션 실행을 위한 모듈 스크립트 추가 -->
+    <script type="module" src="index.tsx"></script>
 </body>
 </html>
