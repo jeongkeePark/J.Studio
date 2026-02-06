@@ -4,7 +4,8 @@ export interface Project {
   title: string;
   category: string;
   description: string;
-  imageUrl: string;
+  imageUrl: string; // Cover image
+  gallery?: string[]; // Additional works/images
   date: string;
   link?: string;
 }
