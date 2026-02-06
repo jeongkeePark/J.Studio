@@ -9,7 +9,7 @@ import Admin from './pages/Admin';
 import Biography from './pages/Biography';
 import { Menu, X, Settings, VolumeX } from 'lucide-react';
 
-// Enhanced Background: Vivid Pink Constellation
+// Enhanced Background: Vivid Pink Glow Constellation
 const AestheticBackground: React.FC<{ theme: ThemeConfig }> = ({ theme }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -21,7 +21,7 @@ const AestheticBackground: React.FC<{ theme: ThemeConfig }> = ({ theme }) => {
 
     let animationFrameId: number;
     let particles: Particle[] = [];
-    const particleCount = 120;
+    const particleCount = 100; // 품질 유지를 위해 적정 수 유지
     const mouse = { x: -1000, y: -1000 };
 
     class Particle {
@@ -31,7 +31,7 @@ const AestheticBackground: React.FC<{ theme: ThemeConfig }> = ({ theme }) => {
       vx: number;
       vy: number;
       opacity: number;
-      glow: number;
+      glowSize: number;
 
       constructor() {
         this.init();
@@ -40,25 +40,25 @@ const AestheticBackground: React.FC<{ theme: ThemeConfig }> = ({ theme }) => {
       init() {
         this.x = Math.random() * canvas!.width;
         this.y = Math.random() * canvas!.height;
-        this.size = Math.random() * 3 + 1.5; // 확실하게 보이도록 크기 증가
-        this.vx = (Math.random() - 0.5) * 0.3;
-        this.vy = (Math.random() - 0.5) * 0.3;
-        this.opacity = Math.random() * 0.6 + 0.4; // 선명도 증가
-        this.glow = Math.random() * 15 + 10; // 글로우 효과 강화
+        this.size = Math.random() * 4 + 2; // 더 확실하게 보이도록 크기 대폭 증가
+        this.vx = (Math.random() - 0.5) * 0.2; // 더 느린 속도
+        this.vy = (Math.random() - 0.5) * 0.2;
+        this.opacity = Math.random() * 0.5 + 0.5; // 더 높은 기본 투명도
+        this.glowSize = Math.random() * 20 + 10; // 빛나는 반경
       }
 
       update() {
         this.x += this.vx;
         this.y += this.vy;
 
-        // Interaction: Swirl and pull
+        // Mouse interaction: Soft pull and swirl
         const dx = mouse.x - this.x;
         const dy = mouse.y - this.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 300) {
-          const force = (300 - dist) / 300;
-          this.x -= (dy / dist) * force * 2.5;
-          this.y += (dx / dist) * force * 2.5;
+        if (dist < 250) {
+          const force = (250 - dist) / 250;
+          this.x -= (dy / dist) * force * 1.5;
+          this.y += (dx / dist) * force * 1.5;
         }
 
         if (this.x < 0) this.x = canvas!.width;
@@ -69,13 +69,15 @@ const AestheticBackground: React.FC<{ theme: ThemeConfig }> = ({ theme }) => {
 
       draw() {
         if (!ctx) return;
-        ctx.shadowBlur = this.glow;
+        ctx.save();
+        ctx.shadowBlur = this.glowSize;
         ctx.shadowColor = theme.accentColor;
-        ctx.fillStyle = `${theme.accentColor}${Math.floor(this.opacity * 255).toString(16).padStart(2, '0')}`;
+        ctx.globalAlpha = this.opacity;
+        ctx.fillStyle = theme.accentColor;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
-        ctx.shadowBlur = 0; 
+        ctx.restore();
       }
     }
 
@@ -89,7 +91,8 @@ const AestheticBackground: React.FC<{ theme: ThemeConfig }> = ({ theme }) => {
     };
 
     const animate = () => {
-      ctx.fillStyle = theme.primaryColor === '#ffffff' ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.12)';
+      // 투명도를 조절하여 잔상 효과 부여
+      ctx.fillStyle = theme.primaryColor === '#ffffff' ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.15)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       particles.forEach(p => {
@@ -128,13 +131,14 @@ const AestheticBackground: React.FC<{ theme: ThemeConfig }> = ({ theme }) => {
   );
 };
 
+// Deep, Slow, Emotional Audio Controller
 const AudioController: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isActivated, setIsActivated] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Mysterious, slow, and emotional track (Deep Cinematic Ambient)
-  const audioSource = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3";
+  // Mysterious & Slow Cinematic Ambient Track
+  const audioSource = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3";
 
   useEffect(() => {
     const unlockAudio = () => {
@@ -143,7 +147,7 @@ const AudioController: React.FC = () => {
           setIsPlaying(true);
           setIsActivated(true);
         }).catch(() => {
-          console.log("Audio waiting for first interaction...");
+          console.log("Waiting for user interaction for audio...");
         });
         window.removeEventListener('click', unlockAudio);
       }
@@ -172,23 +176,24 @@ const AudioController: React.FC = () => {
       <div className="flex flex-col items-end gap-3">
         {!isActivated && (
           <div className="bg-black text-white text-[7px] font-black uppercase tracking-[0.4em] px-4 py-2 animate-pulse shadow-2xl">
-            Click to start the experience
+            Click to activate deep dream ambient
           </div>
         )}
         <div className="flex items-center gap-4">
           <div className="flex flex-col items-end">
-            <span className="text-[7px] font-black uppercase tracking-[0.4em] text-gray-400">Cinematic Ambient</span>
-            <span className="text-[8px] font-serif italic text-black">SLOW TIPO</span>
+            <span className="text-[7px] font-black uppercase tracking-[0.4em] text-gray-400">Cinematic Void</span>
+            <span className="text-[8px] font-serif italic text-black">IMMERSIVE SOUNDSCAPE</span>
           </div>
           <button 
             onClick={toggleAudio}
             className={`w-14 h-14 flex items-center justify-center rounded-full transition-all duration-1000 backdrop-blur-3xl border ${isPlaying ? 'bg-black text-white border-black shadow-2xl scale-110' : 'bg-white/40 text-black border-black/5 hover:bg-white/80'}`}
           >
             {isPlaying ? (
-              <div className="flex gap-[3px] items-end h-4">
-                <div className="w-[2px] bg-white animate-[music-bar_2s_ease-in-out_infinite] h-full"></div>
-                <div className="w-[2px] bg-white animate-[music-bar_1.2s_ease-in-out_infinite] h-2"></div>
-                <div className="w-[2px] bg-white animate-[music-bar_2.5s_ease-in-out_infinite] h-4"></div>
+              <div className="flex gap-[4px] items-end h-4">
+                <div className="w-[2.5px] bg-white animate-[music-bar_3s_ease-in-out_infinite] h-full"></div>
+                <div className="w-[2.5px] bg-white animate-[music-bar_1.8s_ease-in-out_infinite] h-2"></div>
+                <div className="w-[2.5px] bg-white animate-[music-bar_4s_ease-in-out_infinite] h-4"></div>
+                <div className="w-[2.5px] bg-white animate-[music-bar_2.2s_ease-in-out_infinite] h-1"></div>
               </div>
             ) : (
               <VolumeX size={18} strokeWidth={1.5} />
@@ -207,21 +212,35 @@ const AudioController: React.FC = () => {
 };
 
 const App: React.FC = () => {
+  // Load initial states from localStorage with better reliability
   const [projects, setProjects] = useState<Project[]>(() => {
     const saved = localStorage.getItem('jp_projects');
-    return saved ? JSON.parse(saved) : INITIAL_PROJECTS;
+    try {
+      return saved ? JSON.parse(saved) : INITIAL_PROJECTS;
+    } catch (e) {
+      return INITIAL_PROJECTS;
+    }
   });
 
   const [theme, setTheme] = useState<ThemeConfig>(() => {
     const saved = localStorage.getItem('jp_theme');
-    return saved ? JSON.parse(saved) : DEFAULT_THEME;
+    try {
+      return saved ? JSON.parse(saved) : DEFAULT_THEME;
+    } catch (e) {
+      return DEFAULT_THEME;
+    }
   });
 
   const [seo, setSeo] = useState<SEOConfig>(() => {
     const saved = localStorage.getItem('jp_seo');
-    return saved ? JSON.parse(saved) : DEFAULT_SEO;
+    try {
+      return saved ? JSON.parse(saved) : DEFAULT_SEO;
+    } catch (e) {
+      return DEFAULT_SEO;
+    }
   });
 
+  // Persist changes immediately when state updates
   useEffect(() => {
     localStorage.setItem('jp_projects', JSON.stringify(projects));
   }, [projects]);
