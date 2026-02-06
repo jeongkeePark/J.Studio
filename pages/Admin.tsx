@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Project, ThemeConfig, SEOConfig } from '../types';
-import { LayoutGrid, Palette, Globe, Plus, Trash2, Edit2, Check, X, Sparkles, Settings, User, Upload, Image as ImageIcon, Calendar, Loader2, PlusSquare, Type, Lock, ArrowRight } from 'lucide-react';
+import { LayoutGrid, Palette, Globe, Plus, Trash2, Edit2, Check, X, Sparkles, Settings, User, Upload, Image as ImageIcon, Calendar, Loader2, PlusSquare, Type, Lock, ArrowRight, Instagram, Mail, Link as LinkIcon } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
 
 interface AdminProps {
@@ -436,6 +436,45 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
                       onChange={e => setTheme({...theme, siteName: e.target.value})} 
                       className="w-full p-4 border rounded-none outline-none focus:ring-2 focus:ring-pink-100 font-bold" 
                     />
+                  </div>
+
+                  {/* Social Links Editing Section */}
+                  <div className="pt-6 border-t border-gray-100 space-y-6">
+                    <h4 className="text-xs font-black uppercase tracking-[0.3em] text-gray-400 flex items-center gap-2">
+                      <LinkIcon size={14} /> Social & Contact Links
+                    </h4>
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-gray-50 flex items-center justify-center border text-gray-400"><Instagram size={18} /></div>
+                        <input 
+                          type="text" 
+                          placeholder="Instagram URL"
+                          value={theme.socialLinks.instagram} 
+                          onChange={e => setTheme({...theme, socialLinks: {...theme.socialLinks, instagram: e.target.value}})} 
+                          className="flex-grow p-3 border rounded-none outline-none focus:ring-2 focus:ring-pink-100 text-sm" 
+                        />
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-gray-50 flex items-center justify-center border text-gray-400 font-bold text-[10px]">Bē</div>
+                        <input 
+                          type="text" 
+                          placeholder="Behance URL"
+                          value={theme.socialLinks.behance} 
+                          onChange={e => setTheme({...theme, socialLinks: {...theme.socialLinks, behance: e.target.value}})} 
+                          className="flex-grow p-3 border rounded-none outline-none focus:ring-2 focus:ring-pink-100 text-sm" 
+                        />
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-gray-50 flex items-center justify-center border text-gray-400"><Mail size={18} /></div>
+                        <input 
+                          type="email" 
+                          placeholder="Contact Email"
+                          value={theme.socialLinks.email} 
+                          onChange={e => setTheme({...theme, socialLinks: {...theme.socialLinks, email: e.target.value}})} 
+                          className="flex-grow p-3 border rounded-none outline-none focus:ring-2 focus:ring-pink-100 text-sm" 
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
 
