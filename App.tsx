@@ -6,7 +6,8 @@ import { Project, ThemeConfig, SEOConfig } from './types';
 import Home from './pages/Home';
 import ProjectDetail from './pages/ProjectDetail';
 import Admin from './pages/Admin';
-import { Menu, X, Instagram, Mail, LayoutGrid, Settings, Edit3 } from 'lucide-react';
+import Biography from './pages/Biography';
+import { Menu, X, Instagram, Mail, LayoutGrid, Settings, Edit3, User } from 'lucide-react';
 
 const App: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>(() => {
@@ -50,6 +51,7 @@ const App: React.FC = () => {
 
             <div className="hidden md:flex items-center space-x-10 text-sm font-medium tracking-widest uppercase">
               <Link to="/" className="hover:opacity-60 transition-opacity">Work</Link>
+              <Link to="/bio" className="hover:opacity-60 transition-opacity">Bio</Link>
               <Link to="/admin" className="hover:opacity-60 transition-opacity flex items-center gap-2">
                 <Settings size={14} /> Admin
               </Link>
@@ -68,6 +70,7 @@ const App: React.FC = () => {
         {isMenuOpen && (
           <div className="fixed inset-0 bg-white z-40 flex flex-col items-center justify-center space-y-8 text-2xl font-serif">
             <Link to="/" onClick={() => setIsMenuOpen(false)}>Work</Link>
+            <Link to="/bio" onClick={() => setIsMenuOpen(false)}>Bio</Link>
             <Link to="/admin" onClick={() => setIsMenuOpen(false)}>Admin</Link>
             <div className="flex space-x-6 pt-10">
               <a href={theme.socialLinks.instagram} target="_blank"><Instagram size={24} /></a>
@@ -80,6 +83,7 @@ const App: React.FC = () => {
         <main className="flex-grow pt-20">
           <Routes>
             <Route path="/" element={<Home projects={projects} theme={theme} />} />
+            <Route path="/bio" element={<Biography theme={theme} />} />
             <Route path="/project/:id" element={<ProjectDetail projects={projects} theme={theme} />} />
             <Route path="/admin/*" element={
               <Admin 

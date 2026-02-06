@@ -16,6 +16,8 @@ export interface ThemeConfig {
   siteName: string;
   heroTitle: string;
   heroSubtitle: string;
+  bioContent: string;
+  profileImageUrl: string;
   socialLinks: {
     instagram: string;
     behance: string;
