@@ -7,94 +7,199 @@ import Home from './pages/Home';
 import ProjectDetail from './pages/ProjectDetail';
 import Admin from './pages/Admin';
 import Biography from './pages/Biography';
-import { Menu, X, Instagram, Mail, Settings, Volume2, VolumeX } from 'lucide-react';
+import { Menu, X, Settings, VolumeX } from 'lucide-react';
 
-// Interactive Background Component
+// Enhanced Background: Vivid Pink Constellation
 const AestheticBackground: React.FC<{ theme: ThemeConfig }> = ({ theme }) => {
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePos({
-        x: (e.clientX / window.innerWidth - 0.5) * 60,
-        y: (e.clientY / window.innerHeight - 0.5) * 60,
-      });
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animationFrameId: number;
+    let particles: Particle[] = [];
+    const particleCount = 120;
+    const mouse = { x: -1000, y: -1000 };
+
+    class Particle {
+      x: number;
+      y: number;
+      size: number;
+      vx: number;
+      vy: number;
+      opacity: number;
+      glow: number;
+
+      constructor() {
+        this.init();
+      }
+
+      init() {
+        this.x = Math.random() * canvas!.width;
+        this.y = Math.random() * canvas!.height;
+        this.size = Math.random() * 3 + 1.5; // 확실하게 보이도록 크기 증가
+        this.vx = (Math.random() - 0.5) * 0.3;
+        this.vy = (Math.random() - 0.5) * 0.3;
+        this.opacity = Math.random() * 0.6 + 0.4; // 선명도 증가
+        this.glow = Math.random() * 15 + 10; // 글로우 효과 강화
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        // Interaction: Swirl and pull
+        const dx = mouse.x - this.x;
+        const dy = mouse.y - this.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 300) {
+          const force = (300 - dist) / 300;
+          this.x -= (dy / dist) * force * 2.5;
+          this.y += (dx / dist) * force * 2.5;
+        }
+
+        if (this.x < 0) this.x = canvas!.width;
+        if (this.x > canvas!.width) this.x = 0;
+        if (this.y < 0) this.y = canvas!.height;
+        if (this.y > canvas!.height) this.y = 0;
+      }
+
+      draw() {
+        if (!ctx) return;
+        ctx.shadowBlur = this.glow;
+        ctx.shadowColor = theme.accentColor;
+        ctx.fillStyle = `${theme.accentColor}${Math.floor(this.opacity * 255).toString(16).padStart(2, '0')}`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0; 
+      }
+    }
+
+    const init = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      particles = [];
+      for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle());
+      }
     };
+
+    const animate = () => {
+      ctx.fillStyle = theme.primaryColor === '#ffffff' ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.12)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    };
+
+    const handleResize = () => {
+      init();
+    };
+
     window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+    window.addEventListener('resize', handleResize);
+    init();
+    animate();
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [theme.accentColor, theme.primaryColor]);
 
   return (
-    <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none opacity-50">
-      {/* Soft Blobs */}
-      <div 
-        className="absolute top-[-10%] left-[-10%] w-[70%] h-[70%] rounded-full blur-[140px] mix-blend-multiply animate-pulse transition-transform duration-[3s] ease-out"
-        style={{ 
-          backgroundColor: theme.accentColor, 
-          opacity: 0.12,
-          transform: `translate(${mousePos.x}px, ${mousePos.y}px)` 
-        }}
-      />
-      <div 
-        className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full blur-[120px] mix-blend-multiply transition-transform duration-[4s] ease-out"
-        style={{ 
-          backgroundColor: theme.accentColor, 
-          opacity: 0.08,
-          transform: `translate(${-mousePos.x * 1.2}px, ${-mousePos.y * 1.2}px)` 
-        }}
-      />
-      
-      {/* Noise Texture */}
-      <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
-    </div>
+    <canvas 
+      ref={canvasRef} 
+      className="fixed inset-0 z-0 pointer-events-none"
+    />
   );
 };
 
-// Audio Controller Component
 const AudioController: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isActivated, setIsActivated] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const toggleAudio = () => {
+  // Mysterious, slow, and emotional track (Deep Cinematic Ambient)
+  const audioSource = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3";
+
+  useEffect(() => {
+    const unlockAudio = () => {
+      if (!isActivated && audioRef.current) {
+        audioRef.current.play().then(() => {
+          setIsPlaying(true);
+          setIsActivated(true);
+        }).catch(() => {
+          console.log("Audio waiting for first interaction...");
+        });
+        window.removeEventListener('click', unlockAudio);
+      }
+    };
+
+    window.addEventListener('click', unlockAudio);
+    return () => window.removeEventListener('click', unlockAudio);
+  }, [isActivated]);
+
+  const toggleAudio = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
       } else {
-        audioRef.current.play().catch(e => console.log("Autoplay blocked"));
+        audioRef.current.play().catch(e => console.log("Playback error"));
       }
       setIsPlaying(!isPlaying);
+      setIsActivated(true);
     }
   };
 
   return (
-    <div className="fixed bottom-8 right-8 z-[100] flex items-center gap-4 group">
-      <audio 
-        ref={audioRef} 
-        loop 
-        src="https://cdn.pixabay.com/audio/2022/03/10/audio_c976f98f6d.mp3" // Minimalist Cinematic Ambient
-      />
-      <div className="overflow-hidden max-w-0 group-hover:max-w-xs transition-all duration-500 ease-in-out">
-        <span className="text-[9px] font-black uppercase tracking-[0.3em] whitespace-nowrap pr-4 text-gray-400">Ambient Flow</span>
-      </div>
-      <button 
-        onClick={toggleAudio}
-        className="w-12 h-12 flex items-center justify-center bg-white/50 backdrop-blur-md border border-black/5 rounded-full hover:bg-black hover:text-white transition-all shadow-xl shadow-black/5"
-      >
-        {isPlaying ? (
-          <div className="flex gap-[2px] items-end h-3">
-            <div className="w-[2px] bg-current animate-[music-bar_0.8s_ease-in-out_infinite] h-full"></div>
-            <div className="w-[2px] bg-current animate-[music-bar_1.2s_ease-in-out_infinite] h-2"></div>
-            <div className="w-[2px] bg-current animate-[music-bar_0.5s_ease-in-out_infinite] h-full"></div>
-            <div className="w-[2px] bg-current animate-[music-bar_1.0s_ease-in-out_infinite] h-1"></div>
+    <div className="fixed bottom-10 right-10 z-[100]">
+      <audio ref={audioRef} loop src={audioSource} preload="auto" />
+      <div className="flex flex-col items-end gap-3">
+        {!isActivated && (
+          <div className="bg-black text-white text-[7px] font-black uppercase tracking-[0.4em] px-4 py-2 animate-pulse shadow-2xl">
+            Click to start the experience
           </div>
-        ) : (
-          <VolumeX size={16} />
         )}
-      </button>
+        <div className="flex items-center gap-4">
+          <div className="flex flex-col items-end">
+            <span className="text-[7px] font-black uppercase tracking-[0.4em] text-gray-400">Cinematic Ambient</span>
+            <span className="text-[8px] font-serif italic text-black">SLOW TIPO</span>
+          </div>
+          <button 
+            onClick={toggleAudio}
+            className={`w-14 h-14 flex items-center justify-center rounded-full transition-all duration-1000 backdrop-blur-3xl border ${isPlaying ? 'bg-black text-white border-black shadow-2xl scale-110' : 'bg-white/40 text-black border-black/5 hover:bg-white/80'}`}
+          >
+            {isPlaying ? (
+              <div className="flex gap-[3px] items-end h-4">
+                <div className="w-[2px] bg-white animate-[music-bar_2s_ease-in-out_infinite] h-full"></div>
+                <div className="w-[2px] bg-white animate-[music-bar_1.2s_ease-in-out_infinite] h-2"></div>
+                <div className="w-[2px] bg-white animate-[music-bar_2.5s_ease-in-out_infinite] h-4"></div>
+              </div>
+            ) : (
+              <VolumeX size={18} strokeWidth={1.5} />
+            )}
+          </button>
+        </div>
+      </div>
       <style>{`
         @keyframes music-bar {
           0%, 100% { height: 4px; }
-          50% { height: 12px; }
+          50% { height: 16px; }
         }
       `}</style>
     </div>
@@ -147,7 +252,7 @@ const App: React.FC = () => {
 
             <div className="hidden md:flex items-center space-x-12 text-[10px] font-black tracking-[0.4em] uppercase text-gray-900">
               <Link to="/" className="hover:opacity-40 transition-opacity">Work</Link>
-              <Link to="/bio" className="hover:opacity-40 transition-opacity">About</Link>
+              <Link to="/bio" className="hover:opacity-40 transition-opacity">Biography</Link>
               <Link to="/admin" className="flex items-center gap-2 hover:opacity-40 transition-opacity">
                 <Settings size={12} strokeWidth={3} /> Dashboard
               </Link>
@@ -167,7 +272,7 @@ const App: React.FC = () => {
           <div className="fixed inset-0 z-[60] flex flex-col items-center justify-center space-y-12 text-4xl font-black" style={{ backgroundColor: theme.primaryColor }}>
             <button className="absolute top-6 right-6" onClick={() => setIsMenuOpen(false)}><X size={40} /></button>
             <Link to="/" onClick={() => setIsMenuOpen(false)}>Work</Link>
-            <Link to="/bio" onClick={() => setIsMenuOpen(false)}>About</Link>
+            <Link to="/bio" onClick={() => setIsMenuOpen(false)}>Biography</Link>
             <Link to="/admin" onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
           </div>
         )}
@@ -201,8 +306,8 @@ const App: React.FC = () => {
               <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.4em]">© 2024 {theme.siteName} Studio Archive</p>
             </div>
             <div className="flex flex-col gap-4 text-[11px] font-black uppercase tracking-[0.4em]">
-              <a href={theme.socialLinks.instagram} className="hover:opacity-40 transition-opacity">Instagram</a>
-              <a href={theme.socialLinks.behance} className="hover:opacity-40 transition-opacity">Behance</a>
+              <a href={theme.socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="hover:opacity-40 transition-opacity">Instagram</a>
+              <a href={theme.socialLinks.behance} target="_blank" rel="noopener noreferrer" className="hover:opacity-40 transition-opacity">Behance</a>
               <a href={`mailto:${theme.socialLinks.email}`} className="hover:opacity-40 transition-opacity">Email Portfolio</a>
             </div>
           </div>

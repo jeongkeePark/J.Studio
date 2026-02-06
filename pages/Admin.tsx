@@ -381,24 +381,55 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
 
           {activeTab === 'bio' && (
             <div className="space-y-6">
-              <h3 className="text-2xl font-bold">Biography</h3>
+              <h3 className="text-2xl font-bold">Biography & Presence</h3>
               <div className="grid md:grid-cols-3 gap-8">
-                <div className="relative group aspect-[3/4] overflow-hidden shadow-lg border">
-                  <img src={theme.profileImageUrl} className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <button onClick={() => bioFileRef.current?.click()} className="p-4 bg-white/20 backdrop-blur-md rounded-full text-white border border-white/30"><Upload size={24} /></button>
+                <div className="space-y-6">
+                  <div className="relative group aspect-[3/4] overflow-hidden shadow-lg border">
+                    <img src={theme.profileImageUrl} className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <button onClick={() => bioFileRef.current?.click()} className="p-4 bg-white/20 backdrop-blur-md rounded-full text-white border border-white/30"><Upload size={24} /></button>
+                    </div>
+                    <input type="file" ref={bioFileRef} onChange={async e => {
+                      const file = e.target.files?.[0];
+                      if(file) setTheme({...theme, profileImageUrl: await optimizeImage(file, 800, 1000)});
+                    }} className="hidden" />
                   </div>
-                  <input type="file" ref={bioFileRef} onChange={async e => {
-                    const file = e.target.files?.[0];
-                    if(file) setTheme({...theme, profileImageUrl: await optimizeImage(file, 800, 1000)});
-                  }} className="hidden" />
+                  
+                  {/* Social Links inside Bio Tab */}
+                  <div className="space-y-4 pt-4 border-t border-gray-100">
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-4">Contact Channels</h4>
+                    <div className="space-y-4">
+                      <div className="space-y-1">
+                        <label className="text-[9px] font-bold text-gray-300 uppercase">Instagram URL</label>
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 flex items-center justify-center bg-gray-50 text-gray-400 border"><Instagram size={14} /></div>
+                          <input type="text" value={theme.socialLinks.instagram} onChange={e => setTheme({...theme, socialLinks: {...theme.socialLinks, instagram: e.target.value}})} className="flex-grow p-2 text-xs border focus:ring-1 focus:ring-pink-100 outline-none" />
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[9px] font-bold text-gray-300 uppercase">Behance URL</label>
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 flex items-center justify-center bg-gray-50 text-gray-400 border font-black text-[9px]">Bē</div>
+                          <input type="text" value={theme.socialLinks.behance} onChange={e => setTheme({...theme, socialLinks: {...theme.socialLinks, behance: e.target.value}})} className="flex-grow p-2 text-xs border focus:ring-1 focus:ring-pink-100 outline-none" />
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[9px] font-bold text-gray-300 uppercase">Public Email</label>
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 flex items-center justify-center bg-gray-50 text-gray-400 border"><Mail size={14} /></div>
+                          <input type="email" value={theme.socialLinks.email} onChange={e => setTheme({...theme, socialLinks: {...theme.socialLinks, email: e.target.value}})} className="flex-grow p-2 text-xs border focus:ring-1 focus:ring-pink-100 outline-none" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+
                 <div className="md:col-span-2 space-y-4">
                   <div className="flex justify-between items-center">
                     <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">소개글 내용</label>
                     <button onClick={generateBio} className="text-pink-500 text-xs flex items-center gap-1 hover:underline"><Sparkles size={12} /> AI 재생성</button>
                   </div>
-                  <textarea rows={12} value={theme.bioContent} onChange={e => setTheme({...theme, bioContent: e.target.value})} className="w-full p-6 border bg-gray-50 focus:bg-white transition-all outline-none focus:ring-2 focus:ring-pink-100 leading-relaxed text-gray-600" />
+                  <textarea rows={22} value={theme.bioContent} onChange={e => setTheme({...theme, bioContent: e.target.value})} className="w-full p-6 border bg-gray-50 focus:bg-white transition-all outline-none focus:ring-2 focus:ring-pink-100 leading-relaxed text-gray-600 h-full" />
                 </div>
               </div>
             </div>
@@ -436,45 +467,6 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
                       onChange={e => setTheme({...theme, siteName: e.target.value})} 
                       className="w-full p-4 border rounded-none outline-none focus:ring-2 focus:ring-pink-100 font-bold" 
                     />
-                  </div>
-
-                  {/* Social Links Editing Section */}
-                  <div className="pt-6 border-t border-gray-100 space-y-6">
-                    <h4 className="text-xs font-black uppercase tracking-[0.3em] text-gray-400 flex items-center gap-2">
-                      <LinkIcon size={14} /> Social & Contact Links
-                    </h4>
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gray-50 flex items-center justify-center border text-gray-400"><Instagram size={18} /></div>
-                        <input 
-                          type="text" 
-                          placeholder="Instagram URL"
-                          value={theme.socialLinks.instagram} 
-                          onChange={e => setTheme({...theme, socialLinks: {...theme.socialLinks, instagram: e.target.value}})} 
-                          className="flex-grow p-3 border rounded-none outline-none focus:ring-2 focus:ring-pink-100 text-sm" 
-                        />
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gray-50 flex items-center justify-center border text-gray-400 font-bold text-[10px]">Bē</div>
-                        <input 
-                          type="text" 
-                          placeholder="Behance URL"
-                          value={theme.socialLinks.behance} 
-                          onChange={e => setTheme({...theme, socialLinks: {...theme.socialLinks, behance: e.target.value}})} 
-                          className="flex-grow p-3 border rounded-none outline-none focus:ring-2 focus:ring-pink-100 text-sm" 
-                        />
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gray-50 flex items-center justify-center border text-gray-400"><Mail size={18} /></div>
-                        <input 
-                          type="email" 
-                          placeholder="Contact Email"
-                          value={theme.socialLinks.email} 
-                          onChange={e => setTheme({...theme, socialLinks: {...theme.socialLinks, email: e.target.value}})} 
-                          className="flex-grow p-3 border rounded-none outline-none focus:ring-2 focus:ring-pink-100 text-sm" 
-                        />
-                      </div>
-                    </div>
                   </div>
                 </div>
 
