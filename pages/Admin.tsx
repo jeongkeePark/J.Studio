@@ -1,7 +1,7 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Project, ThemeConfig, SEOConfig } from '../types';
-import { LayoutGrid, Palette, Globe, Plus, Trash2, Edit2, Check, X, Sparkles, Settings, User, Upload, Image as ImageIcon, Calendar, Loader2, PlusSquare, Type } from 'lucide-react';
+import { LayoutGrid, Palette, Globe, Plus, Trash2, Edit2, Check, X, Sparkles, Settings, User, Upload, Image as ImageIcon, Calendar, Loader2, PlusSquare, Type, Lock, ArrowRight } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
 
 interface AdminProps {
@@ -14,6 +14,15 @@ interface AdminProps {
 }
 
 const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, seo, setSeo }) => {
+  // Authentication State
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
+    return sessionStorage.getItem('jp_admin_auth') === 'true';
+  });
+  const [loginId, setLoginId] = useState('');
+  const [loginPw, setLoginPw] = useState('');
+  const [loginError, setLoginError] = useState(false);
+
+  // Dashboard State
   const [activeTab, setActiveTab] = useState<'projects' | 'bio' | 'theme' | 'seo'>('projects');
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [isAiLoading, setIsAiLoading] = useState(false);
@@ -22,6 +31,23 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
   const projectFileRef = useRef<HTMLInputElement>(null);
   const galleryFileRef = useRef<HTMLInputElement>(null);
   const bioFileRef = useRef<HTMLInputElement>(null);
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (loginId === 'admin' && loginPw === 'admin1234') {
+      setIsLoggedIn(true);
+      sessionStorage.setItem('jp_admin_auth', 'true');
+      setLoginError(false);
+    } else {
+      setLoginError(true);
+      setTimeout(() => setLoginError(false), 2000);
+    }
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    sessionStorage.removeItem('jp_admin_auth');
+  };
 
   const getTodayDate = () => {
     const now = new Date();
@@ -160,17 +186,73 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
     } catch (error) { alert('AI 실패'); } finally { setIsAiLoading(false); }
   };
 
+  if (!isLoggedIn) {
+    return (
+      <div className="min-h-[80vh] flex items-center justify-center px-6">
+        <div className="w-full max-w-md animate-in fade-in slide-in-from-bottom-8 duration-1000">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-black text-white mb-6">
+              <Lock size={24} />
+            </div>
+            <h1 className={`text-3xl font-bold tracking-tighter mb-2 ${theme.headingFont === 'serif' ? 'font-serif' : 'font-sans'}`}>
+              Studio Authentication
+            </h1>
+            <p className="text-gray-400 text-sm font-medium uppercase tracking-widest">Authorized Access Only</p>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="space-y-1">
+              <input 
+                type="text" 
+                placeholder="Manager ID" 
+                value={loginId}
+                onChange={e => setLoginId(e.target.value)}
+                className={`w-full p-4 bg-gray-50 border rounded-none outline-none focus:ring-2 transition-all ${loginError ? 'border-red-500 focus:ring-red-100' : 'border-gray-100 focus:ring-black/5'}`}
+                required
+              />
+            </div>
+            <div className="space-y-1">
+              <input 
+                type="password" 
+                placeholder="Password" 
+                value={loginPw}
+                onChange={e => setLoginPw(e.target.value)}
+                className={`w-full p-4 bg-gray-50 border rounded-none outline-none focus:ring-2 transition-all ${loginError ? 'border-red-500 focus:ring-red-100' : 'border-gray-100 focus:ring-black/5'}`}
+                required
+              />
+            </div>
+            {loginError && <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest text-center">Invalid credentials. Please try again.</p>}
+            
+            <button 
+              type="submit" 
+              className="w-full py-4 bg-black text-white font-bold flex items-center justify-center gap-2 hover:bg-gray-800 transition-all active:scale-95 shadow-xl shadow-black/10 group"
+            >
+              Access Dashboard <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+            </button>
+          </form>
+
+          <p className="mt-8 text-center text-xs text-gray-300">
+            J.Park Studio Administrative Terminal v1.0
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12">
+    <div className="max-w-7xl mx-auto px-6 py-12 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row gap-8">
         {/* Sidebar */}
         <div className="w-full md:w-64 space-y-2">
-          <h2 className="text-xl font-black mb-6 flex items-center gap-2 text-gray-800"><Settings size={20} /> Dashboard</h2>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-black flex items-center gap-2 text-gray-800"><Settings size={20} /> Dashboard</h2>
+            <button onClick={handleLogout} className="text-[10px] font-bold text-red-400 hover:text-red-600 uppercase tracking-widest">Logout</button>
+          </div>
           {(['projects', 'bio', 'theme', 'seo'] as const).map((tab) => (
             <button 
               key={tab} 
               onClick={() => { setActiveTab(tab); setEditingProject(null); }} 
-              className={`w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 transition-all ${activeTab === tab ? 'bg-black text-white' : 'hover:bg-gray-100 text-gray-500 font-medium'}`}
+              className={`w-full text-left px-4 py-3 flex items-center gap-3 transition-all ${activeTab === tab ? 'bg-black text-white shadow-lg' : 'hover:bg-gray-100 text-gray-500 font-medium'}`}
             >
               {tab === 'projects' && <LayoutGrid size={18} />}
               {tab === 'bio' && <User size={18} />}
@@ -182,7 +264,7 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
         </div>
 
         {/* Main Panel */}
-        <div className="flex-grow bg-white border border-gray-100 rounded-2xl p-8 shadow-sm min-h-[600px]">
+        <div className="flex-grow bg-white border border-gray-100 p-8 shadow-sm min-h-[600px]">
           {activeTab === 'projects' && (
             <div className="space-y-6">
               <div className="flex justify-between items-center">
@@ -195,7 +277,7 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
               </div>
 
               {editingProject ? (
-                <div className="bg-gray-50 p-6 rounded-2xl space-y-6 border border-gray-100">
+                <div className="bg-gray-50 p-6 space-y-6 border border-gray-100 animate-in zoom-in-95 duration-300">
                   <div className="flex justify-between items-center">
                     <h4 className="font-bold text-gray-400 uppercase tracking-widest text-xs">Project Editor</h4>
                     <button onClick={() => setEditingProject(null)} className="text-gray-400 hover:text-black transition-colors"><X size={24} /></button>
@@ -204,15 +286,15 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="space-y-1">
                       <label className="text-[10px] font-bold text-gray-400 uppercase">제목</label>
-                      <input type="text" placeholder="제목" value={editingProject.title} onChange={e => setEditingProject({...editingProject, title: e.target.value})} className="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-pink-100" />
+                      <input type="text" placeholder="제목" value={editingProject.title} onChange={e => setEditingProject({...editingProject, title: e.target.value})} className="w-full p-3 border rounded-none outline-none focus:ring-2 focus:ring-pink-100" />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-bold text-gray-400 uppercase">카테고리</label>
-                      <input type="text" placeholder="카테고리" value={editingProject.category} onChange={e => setEditingProject({...editingProject, category: e.target.value})} className="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-pink-100" />
+                      <input type="text" placeholder="카테고리" value={editingProject.category} onChange={e => setEditingProject({...editingProject, category: e.target.value})} className="w-full p-3 border rounded-none outline-none focus:ring-2 focus:ring-pink-100" />
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-bold text-gray-400 uppercase">날짜</label>
-                      <input type="text" placeholder="2024.05" value={editingProject.date} onChange={e => setEditingProject({...editingProject, date: e.target.value})} className="w-full p-3 border rounded-lg font-mono outline-none focus:ring-2 focus:ring-pink-100" />
+                      <input type="text" placeholder="2024.05" value={editingProject.date} onChange={e => setEditingProject({...editingProject, date: e.target.value})} className="w-full p-3 border rounded-none font-mono outline-none focus:ring-2 focus:ring-pink-100" />
                     </div>
                   </div>
 
@@ -221,17 +303,17 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
                       <label className="text-[10px] font-bold text-gray-400 uppercase">프로젝트 설명</label>
                       <button onClick={() => generateProjectDescription(editingProject.title)} className="text-pink-500 text-xs flex items-center gap-1 hover:underline"><Sparkles size={12} /> AI 생성</button>
                     </div>
-                    <textarea rows={4} value={editingProject.description} onChange={e => setEditingProject({...editingProject, description: e.target.value})} className="w-full p-4 border rounded-lg outline-none focus:ring-2 focus:ring-pink-100" />
+                    <textarea rows={4} value={editingProject.description} onChange={e => setEditingProject({...editingProject, description: e.target.value})} className="w-full p-4 border rounded-none outline-none focus:ring-2 focus:ring-pink-100" />
                   </div>
 
                   <div className="grid md:grid-cols-2 gap-8">
                     <div className="space-y-4">
                       <label className="text-[10px] font-bold text-gray-400 uppercase">커버 이미지</label>
-                      <div className="relative group rounded-lg overflow-hidden">
-                        <img src={editingProject.imageUrl} className="w-full h-48 object-cover" />
+                      <div className="relative group overflow-hidden border">
+                        <img src={editingProject.imageUrl} className="w-full h-auto object-contain bg-gray-100" />
                         <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity" />
                       </div>
-                      <button onClick={() => projectFileRef.current?.click()} className="w-full py-4 border-2 border-dashed border-gray-200 rounded-xl text-gray-400 text-sm hover:border-pink-300 transition-all flex items-center justify-center gap-2 bg-white">
+                      <button onClick={() => projectFileRef.current?.click()} className="w-full py-4 border-2 border-dashed border-gray-200 rounded-none text-gray-400 text-sm hover:border-pink-300 transition-all flex items-center justify-center gap-2 bg-white">
                         {isUploading ? <Loader2 className="animate-spin" /> : <Upload size={16} />} 커버 이미지 변경
                       </button>
                       <input type="file" ref={projectFileRef} onChange={handleProjectImageUpload} className="hidden" />
@@ -240,12 +322,12 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
                       <label className="text-[10px] font-bold text-gray-400 uppercase">갤러리</label>
                       <div className="grid grid-cols-3 gap-3">
                         {editingProject.gallery?.map((img, idx) => (
-                          <div key={idx} className="relative aspect-square rounded overflow-hidden shadow-sm border">
+                          <div key={idx} className="relative aspect-square overflow-hidden shadow-sm border">
                             <img src={img} className="w-full h-full object-cover" />
                             <button onClick={() => removeGalleryImage(idx)} className="absolute top-1 right-1 bg-black/50 text-white rounded-full p-1 hover:bg-red-500 transition-colors"><X size={10} /></button>
                           </div>
                         ))}
-                        <button onClick={() => galleryFileRef.current?.click()} className="aspect-square border-2 border-dashed border-gray-200 rounded flex flex-col items-center justify-center text-gray-300 hover:text-pink-500 hover:border-pink-200 bg-white transition-all">
+                        <button onClick={() => galleryFileRef.current?.click()} className="aspect-square border-2 border-dashed border-gray-200 flex flex-col items-center justify-center text-gray-300 hover:text-pink-500 hover:border-pink-200 bg-white transition-all">
                           <Plus size={20} />
                           <span className="text-[10px] font-bold mt-1">추가</span>
                         </button>
@@ -256,15 +338,15 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
 
                   <div className="flex justify-end items-center pt-6 border-t gap-3">
                     <button onClick={() => setEditingProject(null)} className="px-6 py-2.5 text-sm font-bold text-gray-400 hover:text-black transition-colors">취소</button>
-                    <button onClick={() => handleUpdateProject(editingProject)} className="px-10 py-2.5 bg-black text-white text-sm font-bold rounded-lg shadow-xl active:scale-95 transition-all">설정 저장하기</button>
+                    <button onClick={() => handleUpdateProject(editingProject)} className="px-10 py-2.5 bg-black text-white text-sm font-bold shadow-xl active:scale-95 transition-all">설정 저장하기</button>
                   </div>
                 </div>
               ) : (
                 <div className="grid gap-4">
                   {projects.map(p => (
-                    <div key={p.id} className="group flex items-center justify-between p-4 border rounded-xl hover:bg-gray-50 transition-all border-gray-100">
+                    <div key={p.id} className="group flex items-center justify-between p-4 border hover:bg-gray-50 transition-all border-gray-100">
                       <div className="flex items-center gap-4 cursor-pointer flex-grow" onClick={() => setEditingProject(p)}>
-                        <img src={p.imageUrl} className="w-20 h-14 object-cover rounded shadow-sm" />
+                        <img src={p.imageUrl} className="w-20 h-14 object-cover shadow-sm" />
                         <div>
                           <h4 className="font-bold text-gray-800">{p.title}</h4>
                           <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">{p.category} • {p.date}</p>
@@ -301,7 +383,7 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
             <div className="space-y-6">
               <h3 className="text-2xl font-bold">Biography</h3>
               <div className="grid md:grid-cols-3 gap-8">
-                <div className="relative group aspect-[3/4] overflow-hidden rounded-2xl shadow-lg">
+                <div className="relative group aspect-[3/4] overflow-hidden shadow-lg border">
                   <img src={theme.profileImageUrl} className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                     <button onClick={() => bioFileRef.current?.click()} className="p-4 bg-white/20 backdrop-blur-md rounded-full text-white border border-white/30"><Upload size={24} /></button>
@@ -316,7 +398,7 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
                     <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">소개글 내용</label>
                     <button onClick={generateBio} className="text-pink-500 text-xs flex items-center gap-1 hover:underline"><Sparkles size={12} /> AI 재생성</button>
                   </div>
-                  <textarea rows={12} value={theme.bioContent} onChange={e => setTheme({...theme, bioContent: e.target.value})} className="w-full p-6 border rounded-2xl bg-gray-50 focus:bg-white transition-all outline-none focus:ring-2 focus:ring-pink-100 leading-relaxed text-gray-600" />
+                  <textarea rows={12} value={theme.bioContent} onChange={e => setTheme({...theme, bioContent: e.target.value})} className="w-full p-6 border bg-gray-50 focus:bg-white transition-all outline-none focus:ring-2 focus:ring-pink-100 leading-relaxed text-gray-600" />
                 </div>
               </div>
             </div>
@@ -327,7 +409,6 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
               <h3 className="text-2xl font-bold">Home & Theme Settings</h3>
               
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-5xl">
-                {/* Text Content Settings */}
                 <div className="space-y-8">
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">메인 히어로 타이틀</label>
@@ -335,7 +416,7 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
                       type="text" 
                       value={theme.heroTitle} 
                       onChange={e => setTheme({...theme, heroTitle: e.target.value})} 
-                      className="w-full p-4 border rounded-xl outline-none focus:ring-2 focus:ring-pink-100 text-xl font-bold" 
+                      className="w-full p-4 border rounded-none outline-none focus:ring-2 focus:ring-pink-100 text-xl font-bold" 
                     />
                   </div>
                   <div className="space-y-2">
@@ -344,7 +425,7 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
                       type="text" 
                       value={theme.heroSubtitle} 
                       onChange={e => setTheme({...theme, heroSubtitle: e.target.value})} 
-                      className="w-full p-4 border rounded-xl outline-none focus:ring-2 focus:ring-pink-100" 
+                      className="w-full p-4 border rounded-none outline-none focus:ring-2 focus:ring-pink-100" 
                     />
                   </div>
                   <div className="space-y-2">
@@ -353,14 +434,12 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
                       type="text" 
                       value={theme.siteName} 
                       onChange={e => setTheme({...theme, siteName: e.target.value})} 
-                      className="w-full p-4 border rounded-xl outline-none focus:ring-2 focus:ring-pink-100 font-bold" 
+                      className="w-full p-4 border rounded-none outline-none focus:ring-2 focus:ring-pink-100 font-bold" 
                     />
                   </div>
                 </div>
 
-                {/* Visual Settings */}
-                <div className="space-y-10 bg-gray-50 p-6 rounded-2xl border border-gray-100">
-                  {/* Font Selection */}
+                <div className="space-y-10 bg-gray-50 p-6 border border-gray-100">
                   <div className="space-y-4">
                     <label className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
                       <Type size={14} /> 메인 서체 스타일
@@ -368,14 +447,14 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
                     <div className="grid grid-cols-2 gap-3">
                       <button 
                         onClick={() => setTheme({...theme, headingFont: 'serif'})}
-                        className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${theme.headingFont === 'serif' ? 'border-pink-500 bg-white shadow-md' : 'border-transparent bg-gray-100 hover:bg-gray-200 opacity-60'}`}
+                        className={`p-4 border-2 flex flex-col items-center gap-2 transition-all ${theme.headingFont === 'serif' ? 'border-pink-500 bg-white shadow-md' : 'border-transparent bg-gray-100 hover:bg-gray-200 opacity-60'}`}
                       >
                         <span className="text-2xl font-serif font-black">Aa</span>
                         <span className="text-[10px] font-bold uppercase tracking-widest">Serif Style</span>
                       </button>
                       <button 
                         onClick={() => setTheme({...theme, headingFont: 'sans'})}
-                        className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all ${theme.headingFont === 'sans' ? 'border-pink-500 bg-white shadow-md' : 'border-transparent bg-gray-100 hover:bg-gray-200 opacity-60'}`}
+                        className={`p-4 border-2 flex flex-col items-center gap-2 transition-all ${theme.headingFont === 'sans' ? 'border-pink-500 bg-white shadow-md' : 'border-transparent bg-gray-100 hover:bg-gray-200 opacity-60'}`}
                       >
                         <span className="text-2xl font-sans font-black">Aa</span>
                         <span className="text-[10px] font-bold uppercase tracking-widest">Sans Style</span>
@@ -383,28 +462,27 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
                     </div>
                   </div>
 
-                  {/* Colors */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-4">
                       <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">포인트 색상</label>
-                      <div className="flex items-center gap-3 p-2 bg-white rounded-xl border">
+                      <div className="flex items-center gap-3 p-2 bg-white border">
                         <input 
                           type="color" 
                           value={theme.accentColor} 
                           onChange={e => setTheme({...theme, accentColor: e.target.value})} 
-                          className="w-12 h-12 rounded cursor-pointer border-none shadow-sm" 
+                          className="w-12 h-12 cursor-pointer border-none shadow-sm" 
                         />
                         <span className="font-mono text-xs text-gray-500 uppercase">{theme.accentColor}</span>
                       </div>
                     </div>
                     <div className="space-y-4">
                       <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">전체 배경 색상</label>
-                      <div className="flex items-center gap-3 p-2 bg-white rounded-xl border">
+                      <div className="flex items-center gap-3 p-2 bg-white border">
                         <input 
                           type="color" 
                           value={theme.primaryColor} 
                           onChange={e => setTheme({...theme, primaryColor: e.target.value})} 
-                          className="w-12 h-12 rounded cursor-pointer border-none shadow-sm border border-gray-100" 
+                          className="w-12 h-12 cursor-pointer border-none shadow-sm border border-gray-100" 
                         />
                         <span className="font-mono text-xs text-gray-500 uppercase">{theme.primaryColor}</span>
                       </div>
@@ -421,11 +499,11 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
               <div className="max-w-xl space-y-6">
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-gray-400 uppercase">메타 타이틀 (검색 제목)</label>
-                  <input type="text" value={seo.metaTitle} onChange={e => setSeo({...seo, metaTitle: e.target.value})} className="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-pink-100" />
+                  <input type="text" value={seo.metaTitle} onChange={e => setSeo({...seo, metaTitle: e.target.value})} className="w-full p-3 border rounded-none outline-none focus:ring-2 focus:ring-pink-100" />
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-gray-400 uppercase">메타 설명 (검색 설명)</label>
-                  <textarea rows={3} value={seo.metaDescription} onChange={e => setSeo({...seo, metaDescription: e.target.value})} className="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-pink-100" />
+                  <textarea rows={3} value={seo.metaDescription} onChange={e => setSeo({...seo, metaDescription: e.target.value})} className="w-full p-3 border rounded-none outline-none focus:ring-2 focus:ring-pink-100" />
                 </div>
               </div>
             </div>

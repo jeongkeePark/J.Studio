@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Project, ThemeConfig } from '../types';
-import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 
 interface ProjectDetailProps {
   projects: Project[];
@@ -36,106 +36,108 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ projects, theme }) => {
   const goToNext = () => navigate(`/project/${nextProject.id}`);
 
   return (
-    <div className="animate-in fade-in duration-700 bg-white min-h-screen">
-      {/* Desktop Navigation Buttons - Improved responsiveness */}
+    <div className="animate-in fade-in duration-1000 min-h-screen relative">
+      
+      {/* Desktop Navigation - Sensible & Stylish */}
       <div className="hidden xl:block">
         <button 
           onClick={goToPrev}
-          className="fixed left-4 2xl:left-[calc(50%-42rem)] top-1/2 -translate-y-1/2 p-2 text-gray-200 hover:text-black transition-all hover:scale-110 active:scale-95 z-40 group"
-          aria-label="Previous Project"
+          className="fixed left-8 top-1/2 -translate-y-1/2 z-50 group flex flex-col items-center gap-4 transition-all hover:-translate-x-2"
         >
-          <div className="bg-white/50 backdrop-blur-sm border border-gray-100 p-5 rounded-full shadow-sm group-hover:bg-white group-hover:shadow-xl group-hover:border-gray-200 transition-all">
-            <ChevronLeft size={32} strokeWidth={1} />
+          <div className="w-12 h-12 rounded-full border border-black/5 bg-white/30 backdrop-blur-lg flex items-center justify-center group-hover:bg-black group-hover:text-white transition-all shadow-xl">
+            <ChevronLeft size={18} />
           </div>
-          <span className="absolute top-full left-1/2 -translate-x-1/2 mt-4 text-[9px] font-black uppercase tracking-[0.3em] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap text-black">Previous</span>
+          <div className="opacity-0 group-hover:opacity-100 transition-all duration-500 text-center">
+             <p className="text-[6px] font-black uppercase tracking-[0.4em] text-gray-400">Prev</p>
+             <p className="text-[8px] font-serif italic text-black whitespace-nowrap">{prevProject.title}</p>
+          </div>
         </button>
 
         <button 
           onClick={goToNext}
-          className="fixed right-4 2xl:right-[calc(50%-42rem)] top-1/2 -translate-y-1/2 p-2 text-gray-200 hover:text-black transition-all hover:scale-110 active:scale-95 z-40 group"
-          aria-label="Next Project"
+          className="fixed right-8 top-1/2 -translate-y-1/2 z-50 group flex flex-col items-center gap-4 transition-all hover:translate-x-2"
         >
-          <div className="bg-white/50 backdrop-blur-sm border border-gray-100 p-5 rounded-full shadow-sm group-hover:bg-white group-hover:shadow-xl group-hover:border-gray-200 transition-all">
-            <ChevronRight size={32} strokeWidth={1} />
+          <div className="w-12 h-12 rounded-full border border-black/5 bg-white/30 backdrop-blur-lg flex items-center justify-center group-hover:bg-black group-hover:text-white transition-all shadow-xl">
+            <ChevronRight size={18} />
           </div>
-          <span className="absolute top-full left-1/2 -translate-x-1/2 mt-4 text-[9px] font-black uppercase tracking-[0.3em] opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap text-black">Next Project</span>
+          <div className="opacity-0 group-hover:opacity-100 transition-all duration-500 text-center">
+             <p className="text-[6px] font-black uppercase tracking-[0.4em] text-gray-400">Next</p>
+             <p className="text-[8px] font-serif italic text-black whitespace-nowrap">{nextProject.title}</p>
+          </div>
         </button>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-20 relative">
+      <div className="max-w-screen-2xl mx-auto px-6 pt-32 relative z-10">
         
-        {/* Fixed Back Button */}
-        <Link to="/" className="fixed top-28 left-6 md:left-10 z-30 flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-bold py-2.5 px-4 bg-white/70 backdrop-blur-md border border-gray-100 rounded-full hover:bg-black hover:text-white transition-all group shadow-sm">
-          <ArrowLeft size={12} className="group-hover:-translate-x-1 transition-transform" /> Back
-        </Link>
+        {/* Back link */}
+        <div className="mb-20">
+          <Link to="/" className="inline-flex items-center gap-4 group">
+            <div className="w-6 h-[1px] bg-black transition-all group-hover:w-10"></div>
+            <span className="text-[8px] font-black uppercase tracking-[0.3em]">Back to Archive</span>
+          </Link>
+        </div>
         
-        <div className="max-w-5xl mx-auto relative">
+        <div className="w-full">
           {/* Project Header */}
-          <div className="mb-20 mt-10 md:mt-0 text-center md:text-left">
-            <span className="text-[10px] font-black uppercase tracking-[0.5em] mb-6 block" style={{ color: theme.accentColor }}>
-              {project.category} — {project.date}
-            </span>
-            <h1 className={`text-5xl md:text-8xl font-black mb-12 leading-none tracking-tighter ${theme.headingFont === 'serif' ? 'font-serif' : ''}`}>
+          <header className="mb-32">
+            <p className="text-[8px] font-black uppercase tracking-[0.5em] mb-4" style={{ color: theme.accentColor }}>
+              {project.category} / {project.date}
+            </p>
+            <h1 className={`text-6xl md:text-[11rem] font-black leading-[0.8] tracking-tighter mb-20 ${theme.headingFont === 'serif' ? 'font-serif italic' : ''}`}>
               {project.title}
             </h1>
             
-            <div className="grid md:grid-cols-4 gap-12 py-10 border-y border-gray-100">
-              <div className="md:col-span-3">
-                <h2 className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-300 mb-4">Project Narrative</h2>
-                <p className="text-gray-600 text-lg leading-relaxed font-light whitespace-pre-wrap max-w-2xl">{project.description}</p>
+            <div className="grid md:grid-cols-12 gap-12 pt-12 border-t border-black/5">
+              <div className="md:col-span-8">
+                {/* Even smaller, more delicate description text */}
+                <p className="text-sm md:text-base text-gray-400 font-light leading-relaxed whitespace-pre-wrap max-w-xl">
+                  {project.description}
+                </p>
               </div>
-              <div className="space-y-6">
+              <div className="md:col-span-4 space-y-6">
                 <div>
-                  <h2 className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-300 mb-2">Released</h2>
-                  <p className="text-sm font-medium">{project.date}</p>
+                  <h3 className="text-[7px] font-black uppercase tracking-[0.3em] text-gray-300 mb-1">Timeline</h3>
+                  <p className="text-[10px] font-bold">{project.date}</p>
                 </div>
                 {project.link && (
                   <div>
-                    <h2 className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-300 mb-2">Platform</h2>
-                    <a href={project.link} target="_blank" className="text-sm underline hover:opacity-50 transition-opacity break-all">{project.link}</a>
+                    <h3 className="text-[7px] font-black uppercase tracking-[0.3em] text-gray-300 mb-1">Resource</h3>
+                    <a href={project.link} target="_blank" className="text-[10px] font-bold border-b border-black/10 hover:border-black transition-all">Visit Project Site</a>
                   </div>
                 )}
               </div>
             </div>
-          </div>
+          </header>
           
-          {/* Project Gallery */}
-          <div className="relative space-y-24 mb-40">
-            {/* Mobile Navigation */}
-            <div className="lg:hidden flex justify-between items-center mb-8 py-4 border-b">
-               <button onClick={goToPrev} className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest"><ChevronLeft size={20} /> Prev</button>
-               <button onClick={goToNext} className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest">Next <ChevronRight size={20} /></button>
+          {/* Massive Visual Showcase */}
+          <div className="space-y-40">
+            <div className="bg-white/20 backdrop-blur-lg p-0.5 shadow-2xl border border-black/5">
+              <img src={project.imageUrl} className="w-full h-auto block grayscale hover:grayscale-0 transition-all duration-[1.5s]" />
             </div>
 
-            {/* Main Cover Image */}
-            <div className="bg-gray-50/30 rounded-[2rem] overflow-hidden shadow-2xl">
-              <img 
-                src={project.imageUrl} 
-                alt={`${project.title} - Main`} 
-                className="w-full h-auto" 
-              />
-            </div>
-
-            {/* Gallery Images */}
-            {project.gallery && project.gallery.length > 0 && (
-              <div className="space-y-24">
-                {project.gallery.map((img, idx) => (
-                  <div key={idx} className="bg-gray-50/30 rounded-[2rem] overflow-hidden shadow-xl">
-                    <img 
-                      src={img} 
-                      alt={`${project.title} - Work ${idx + 1}`} 
-                      className="w-full h-auto" 
-                    />
-                  </div>
-                ))}
+            {project.gallery?.map((img, idx) => (
+              <div key={idx} className="bg-white/20 backdrop-blur-lg p-0.5 shadow-2xl border border-black/5">
+                <img src={img} className="w-full h-auto block grayscale hover:grayscale-0 transition-all duration-[1.5s]" />
               </div>
-            )}
+            ))}
           </div>
           
-          {/* Bottom Link */}
-          <div className="text-center py-20 border-t border-gray-50">
-            <p className="text-[10px] font-bold uppercase tracking-[0.5em] text-gray-300 mb-4">End of Collection</p>
-            <Link to="/" className="text-sm font-bold border-b border-black pb-1 hover:opacity-50 transition-opacity">Back to Work Index</Link>
+          {/* Mobile Navigation */}
+          <div className="xl:hidden mt-32 grid grid-cols-2 gap-1">
+             <button onClick={goToPrev} className="p-8 bg-white/40 backdrop-blur-md text-left border border-black/5">
+                <span className="text-[6px] font-black uppercase tracking-widest text-gray-400 block mb-1">Prev</span>
+                <span className="font-bold text-[10px] truncate block">{prevProject.title}</span>
+             </button>
+             <button onClick={goToNext} className="p-8 bg-black text-white text-right">
+                <span className="text-[6px] font-black uppercase tracking-widest text-gray-400 block mb-1">Next</span>
+                <span className="font-bold text-[10px] truncate block">{nextProject.title}</span>
+             </button>
+          </div>
+
+          <div className="mt-40 text-center pb-40">
+            <Link to="/" className="text-[8px] font-black uppercase tracking-[0.5em] opacity-30 hover:opacity-100 transition-opacity">
+              Close View
+            </Link>
           </div>
         </div>
       </div>
