@@ -4,10 +4,18 @@ export interface Project {
   title: string;
   category: string;
   description: string;
-  imageUrl: string; // Cover image
-  gallery?: string[]; // Additional works/images
+  imageUrl: string;
+  videoUrl?: string;
+  gallery?: string[];
   date: string;
   link?: string;
+}
+
+export interface Notice {
+  id: string;
+  title: string;
+  content: string;
+  date: string;
 }
 
 export interface ThemeConfig {
@@ -16,13 +24,16 @@ export interface ThemeConfig {
   headingFont: 'serif' | 'sans';
   siteName: string;
   heroTitle: string;
+  heroTitleSize: number;
   heroSubtitle: string;
   bioContent: string;
   profileImageUrl: string;
+  contactAddress: string;
   socialLinks: {
     instagram: string;
-    behance: string;
+    blog: string;
     email: string;
+    phone: string;
   };
 }
 

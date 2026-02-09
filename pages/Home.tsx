@@ -1,15 +1,26 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Project, ThemeConfig } from '../types';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, PlayCircle } from 'lucide-react';
 
 interface HomeProps {
   projects: Project[];
   theme: ThemeConfig;
+  setGlobalVideoPlaying: (playing: boolean) => void;
 }
 
-const Home: React.FC<HomeProps> = ({ projects, theme }) => {
+const Home: React.FC<HomeProps> = ({ projects, theme, setGlobalVideoPlaying }) => {
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
+
+  const handleVideoPlay = () => {
+    setGlobalVideoPlaying(true);
+  };
+
+  const handleVideoPause = () => {
+    setGlobalVideoPlaying(false);
+  };
+
   return (
     <div className="animate-in fade-in duration-1000">
       {/* Hero Section */}
@@ -19,7 +30,10 @@ const Home: React.FC<HomeProps> = ({ projects, theme }) => {
             Selected Works Vol. 1
           </p>
         </div>
-        <h1 className={`text-6xl md:text-[14rem] font-black mb-12 leading-[0.8] tracking-tighter ${theme.headingFont === 'serif' ? 'font-serif italic' : 'font-sans'}`}>
+        <h1 
+          className="font-black mb-12 leading-[0.8] tracking-tighter"
+          style={{ fontSize: `${theme.heroTitleSize}rem` }}
+        >
           {theme.heroTitle}
         </h1>
         <p className="text-sm md:text-base text-gray-400 max-w-md font-light leading-relaxed">
@@ -27,45 +41,79 @@ const Home: React.FC<HomeProps> = ({ projects, theme }) => {
         </p>
       </section>
 
-      {/* Grid Section - Massive images */}
+      {/* Grid Section */}
       <section className="px-6 pb-60">
         <div className="max-w-screen-2xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16">
             {projects.map((project, idx) => (
-              <Link 
+              <div 
                 key={project.id} 
-                to={`/project/${project.id}`}
                 className={`group block space-y-6 ${idx % 2 === 1 ? 'md:mt-40' : ''}`}
+                onMouseEnter={() => setHoveredId(project.id)}
+                onMouseLeave={() => {
+                    setHoveredId(null);
+                    handleVideoPause();
+                }}
               >
-                <div className="relative overflow-hidden bg-white/20 backdrop-blur-lg p-0.5 shadow-2xl transition-transform duration-1000 hover:-translate-y-4">
-                  <div className="overflow-hidden border border-black/5">
-                    <img 
-                      src={project.imageUrl} 
-                      alt={project.title}
-                      className="w-full h-auto object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-105"
-                    />
-                  </div>
-                  {/* Subtle Hover Overlay */}
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-12 text-center pointer-events-none">
-                     <span className="text-[7px] font-black uppercase tracking-[0.4em] text-white/50 mb-2">{project.category}</span>
-                     <h3 className="text-xl font-bold text-white tracking-tighter">{project.title}</h3>
-                  </div>
-                </div>
+                <Link to={`/project/${project.id}`} className="block">
+                    <div className="relative overflow-hidden bg-white/20 backdrop-blur-lg p-0.5 shadow-2xl transition-transform duration-1000 group-hover:-translate-y-4">
+                      <div className="relative aspect-video overflow-hidden border border-black/5">
+                        {project.videoUrl && hoveredId === project.id ? (
+                            <div className="w-full h-full bg-black">
+                                {project.videoUrl.includes('youtube.com') || project.videoUrl.includes('vimeo.com') ? (
+                                    <iframe 
+                                        src={`${project.videoUrl}${project.videoUrl.includes('?') ? '&' : '?'}autoplay=1&mute=0`} 
+                                        className="w-full h-full" 
+                                        frameBorder="0" 
+                                        allow="autoplay; fullscreen"
+                                        onLoad={handleVideoPlay}
+                                    ></iframe>
+                                ) : (
+                                    <video 
+                                        src={project.videoUrl} 
+                                        className="w-full h-full object-cover" 
+                                        autoPlay 
+                                        loop 
+                                        onPlay={handleVideoPlay}
+                                        onPause={handleVideoPause}
+                                    />
+                                )}
+                            </div>
+                        ) : (
+                            <img 
+                              src={project.imageUrl} 
+                              alt={project.title}
+                              className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-105"
+                            />
+                        )}
+                        
+                        {!hoveredId && project.videoUrl && (
+                            <div className="absolute top-4 right-4 text-white drop-shadow-lg opacity-80">
+                                <PlayCircle size={24} />
+                            </div>
+                        )}
+                      </div>
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-12 text-center pointer-events-none">
+                         <span className="text-[7px] font-black uppercase tracking-[0.4em] text-white/50 mb-2">{project.category}</span>
+                         <h3 className="text-xl font-bold text-white tracking-tighter">{project.title}</h3>
+                      </div>
+                    </div>
+                </Link>
                 
                 <div className="flex justify-between items-end border-b border-black/5 pb-4 group-hover:border-black transition-colors">
                   <div>
                     <span className="text-[8px] font-black uppercase tracking-[0.3em] text-gray-300 mb-1 block">
                       {project.date}
                     </span>
-                    <h3 className={`text-base font-bold ${theme.headingFont === 'serif' ? 'font-serif' : 'font-sans'}`}>
+                    <h3 className="text-base font-bold">
                       {project.title}
                     </h3>
                   </div>
-                  <div className="w-8 h-8 flex items-center justify-center border border-black/5 rounded-full group-hover:bg-black group-hover:text-white transition-all transform group-hover:rotate-45">
+                  <Link to={`/project/${project.id}`} className="w-8 h-8 flex items-center justify-center border border-black/5 rounded-full group-hover:bg-black group-hover:text-white transition-all transform group-hover:rotate-45">
                     <ArrowUpRight size={14} />
-                  </div>
+                  </Link>
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
         </div>
