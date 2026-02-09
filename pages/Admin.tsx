@@ -201,7 +201,8 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
               <div className="grid md:grid-cols-2 gap-12">
                 <div className="space-y-8">
                   <div className="space-y-4"><label className="text-[9px] font-black uppercase text-gray-400">Site Name</label><input type="text" value={theme.siteName} onChange={e => setTheme({...theme, siteName: e.target.value})} className="w-full p-5 border-b outline-none font-black text-2xl" /></div>
-                  <div className="space-y-4"><label className="text-[9px] font-black uppercase text-gray-400">Hero Title Size</label><input type="range" min="4" max="20" step="0.5" value={theme.heroTitleSize} onChange={e => setTheme({...theme, heroTitleSize: parseFloat(e.target.value)})} className="w-full" /></div>
+                  <div className="space-y-4"><label className="text-[9px] font-black uppercase text-gray-400">Main Headline (Hero)</label><input type="text" value={theme.heroTitle} onChange={e => setTheme({...theme, heroTitle: e.target.value})} className="w-full p-5 border-b outline-none font-black text-4xl" /></div>
+                  <div className="space-y-4"><label className="text-[9px] font-black uppercase text-gray-400">Headline Size</label><input type="range" min="4" max="20" step="0.5" value={theme.heroTitleSize} onChange={e => setTheme({...theme, heroTitleSize: parseFloat(e.target.value)})} className="w-full" /></div>
                 </div>
                 <div className="space-y-8">
                     <div className="space-y-4">
@@ -212,6 +213,7 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
                         <label className="text-[9px] font-black uppercase text-gray-400">Colors</label>
                         <div className="flex gap-4"><input type="color" value={theme.primaryColor} onChange={e => setTheme({...theme, primaryColor: e.target.value})} /><input type="color" value={theme.accentColor} onChange={e => setTheme({...theme, accentColor: e.target.value})} /></div>
                     </div>
+                    <div className="space-y-4"><label className="text-[9px] font-black uppercase text-gray-400">Hero Subtitle</label><input type="text" value={theme.heroSubtitle} onChange={e => setTheme({...theme, heroSubtitle: e.target.value})} className="w-full p-5 border-b outline-none" /></div>
                 </div>
               </div>
             </div>

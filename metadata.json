@@ -1,8 +1,5 @@
 {
   "name": "JayKayPark_Design Lab.",
   "description": "A high-end, professional portfolio website for J.Park Studio featuring an admin dashboard for full content and design customization.",
-  "requestFramePermissions": [
-    "camera",
-    "microphone"
-  ]
+  "requestFramePermissions": []
 }

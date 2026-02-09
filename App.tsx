@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { HashRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { HashRouter, Routes, Route, Link } from 'react-router-dom';
 import { INITIAL_PROJECTS, DEFAULT_THEME, DEFAULT_SEO } from './constants';
 import { Project, ThemeConfig, SEOConfig } from './types';
 import Home from './pages/Home';
@@ -81,7 +81,6 @@ const AestheticBackground: React.FC<{ theme: ThemeConfig }> = ({ theme }) => {
         this.x += this.vx;
         this.y += this.vy;
 
-        // Follow cursor interaction
         const dx = mouse.x - this.x;
         const dy = mouse.y - this.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
@@ -113,12 +112,9 @@ const AestheticBackground: React.FC<{ theme: ThemeConfig }> = ({ theme }) => {
 
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
       particles.forEach((p, i) => {
         p.update();
         p.draw();
-        
-        // Lines between particles
         for (let j = i + 1; j < particles.length; j++) {
           const p2 = particles[j];
           const dx = p.x - p2.x;
@@ -134,8 +130,6 @@ const AestheticBackground: React.FC<{ theme: ThemeConfig }> = ({ theme }) => {
             ctx.stroke();
           }
         }
-
-        // Mouse connection lines
         const dx = p.x - mouse.x;
         const dy = p.y - mouse.y;
         const distM = Math.sqrt(dx * dx + dy * dy);
@@ -194,11 +188,7 @@ const AudioController: React.FC<{ isVideoPlaying: boolean }> = ({ isVideoPlaying
 
   useEffect(() => {
     if (audioRef.current && isActivated) {
-      if (isVideoPlaying) {
-        audioRef.current.volume = 0;
-      } else {
-        audioRef.current.volume = 0.2;
-      }
+      audioRef.current.volume = isVideoPlaying ? 0 : 0.2;
     }
   }, [isVideoPlaying, isActivated]);
 
@@ -225,10 +215,10 @@ const NavLink: React.FC<{ to: string, children: React.ReactNode, accentColor: st
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <span className="relative z-10">{children}</span>
+      <span className="relative z-10 transition-colors duration-300" style={{ color: isHovered ? accentColor : 'inherit' }}>{children}</span>
       <span 
-        className={`absolute bottom-0 left-0 h-[1px] bg-black transition-all duration-500 ease-out ${isHovered ? 'w-full' : 'w-0'}`} 
-        style={{ backgroundColor: isHovered ? accentColor : 'black' }}
+        className={`absolute bottom-0 left-0 h-[1.5px] transition-all duration-500 ease-out ${isHovered ? 'w-full' : 'w-0'}`} 
+        style={{ backgroundColor: accentColor }}
       ></span>
     </Link>
   );
@@ -273,7 +263,7 @@ const App: React.FC = () => {
           </div>
         </nav>
         {isMenuOpen && (
-          <div className="fixed inset-0 z-[60] flex flex-col items-center justify-center space-y-12 text-4xl font-black bg-white animate-in fade-in zoom-in duration-500">
+          <div className="fixed inset-0 z-[60] flex flex-col items-center justify-center space-y-12 text-4xl font-black bg-white">
             <button className="absolute top-6 right-6" onClick={() => setIsMenuOpen(false)}><X size={40} /></button>
             <Link to="/" onClick={() => setIsMenuOpen(false)}>Work</Link>
             <Link to="/bio" onClick={() => setIsMenuOpen(false)}>Biography</Link>
@@ -294,7 +284,7 @@ const App: React.FC = () => {
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-end gap-16">
             <div className="max-w-md">
               <h2 className="text-4xl md:text-6xl font-black mb-8 leading-[1.1]">Designing for<br />the <span style={{ color: theme.accentColor }}>future</span>.</h2>
-              <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.4em]">© 2025 {theme.siteName}</p>
+              <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.4em]">© 2025 JayKayPark_Design Lab.</p>
             </div>
             <div className="flex flex-col gap-4 text-[11px] font-black uppercase tracking-[0.4em]">
               <a href={theme.socialLinks.instagram} target="_blank" className="hover:opacity-50">Instagram</a>
