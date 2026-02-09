@@ -29,6 +29,8 @@ export interface ThemeConfig {
   bioContent: string;
   profileImageUrl: string;
   contactAddress: string;
+  adminId: string;
+  adminPw: string;
   socialLinks: {
     instagram: string;
     blog: string;

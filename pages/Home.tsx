@@ -93,9 +93,9 @@ const Home: React.FC<HomeProps> = ({ projects, theme, setGlobalVideoPlaying }) =
                             </div>
                         )}
                       </div>
-                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-12 text-center pointer-events-none">
-                         <span className="text-xs font-black uppercase tracking-[0.4em] text-white/50 mb-4">{project.category}</span>
-                         <h3 className="text-4xl md:text-5xl font-black text-white tracking-tighter leading-none">{project.title}</h3>
+                      <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-12 text-center pointer-events-none">
+                         <span className="text-sm md:text-base font-black uppercase tracking-[0.4em] text-white/50 mb-6">{project.category}</span>
+                         <h3 className="text-5xl md:text-7xl font-black text-white tracking-tighter leading-none">{project.title}</h3>
                       </div>
                     </div>
                 </Link>
