@@ -1,84 +1,102 @@
-
 import { Project, ThemeConfig, SEOConfig, Notice } from './types';
 
 export const INITIAL_PROJECTS: Project[] = [
   {
-    id: '1',
-    title: 'Chromatic Silence',
-    category: 'Photography',
-    description: '서울의 새벽 풍경을 몽환적인 톤으로 포착한 연작입니다. 정적인 순간에 깃든 역동적인 빛의 변화를 탐구합니다.',
-    imageUrl: 'https://images.unsplash.com/photo-1493397212122-2b85def82820?auto=format&fit=crop&q=80&w=1200',
-    date: '2025.01'
+    "id": "1",
+    "title": "Memories",
+    "category": "Photography",
+    "description": "Memories",
+    "imageUrl": "https://images.unsplash.com/photo-1493863641943-9b68992a8d07?auto=format&fit=crop&q=80&w=1600",
+    "date": "2025.01"
   },
   {
-    id: '2',
-    title: 'Surreal Lines',
-    category: 'Illustration',
-    description: '자연의 유기적 형태와 기하학적 구조의 융합을 시각화한 일러스트레이션 시리즈입니다.',
-    imageUrl: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&q=80&w=1200',
-    date: '2024.12'
+    "id": "2",
+    "title": "Mythic Lyricism",
+    "category": "Illustration",
+    "description": "Mythic Lyricism",
+    "imageUrl": "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&q=80&w=1200",
+    "date": "2024.12"
   },
   {
-    id: '3',
-    title: 'Liquid Motion',
-    category: 'Digital Art & Video',
-    description: '디지털 입자들의 흐름을 유체 역학적으로 재구성한 실험적 영상 프로젝트입니다.',
-    imageUrl: 'https://images.unsplash.com/photo-1633167606207-d840b5070fc2?auto=format&fit=crop&q=80&w=1200',
-    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-abstract-flowing-multi-colored-gradient-background-28682-large.mp4',
-    date: '2024.11'
+    "id": "3",
+    "title": "Floral Chaosmos",
+    "category": "Digital Art & Video",
+    "description": "Floral Chaosmos",
+    "imageUrl": "https://images.unsplash.com/photo-1633167606207-d840b5070fc2?auto=format&fit=crop&q=80&w=1200",
+    "videoUrl": "https://assets.mixkit.co/videos/preview/mixkit-abstract-flowing-multi-colored-gradient-background-28682-large.mp4",
+    "date": "2024.11"
   },
   {
-    id: '4',
-    title: 'Geometric Flux',
-    category: 'Vector Graphic',
-    description: '벡터 그래픽의 선명함과 추상적 패턴을 결합한 비주얼 아트워크입니다.',
-    imageUrl: 'https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?auto=format&fit=crop&q=80&w=1200',
-    date: '2024.10'
+    "id": "4",
+    "title": "Geometric Flux",
+    "category": "Vector Graphic",
+    "description": "Geometric Flux",
+    "imageUrl": "https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?auto=format&fit=crop&q=80&w=1200",
+    "date": "2024.10"
   },
   {
-    id: '5',
-    title: 'Font as Architecture',
-    category: 'Typography',
-    description: '타이포그래피를 공간적 관점에서 재해석하여 글자의 구조적 아름다움을 극대화했습니다.',
-    imageUrl: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&q=80&w=1200',
-    date: '2024.09'
+    "id": "5",
+    "title": "Font as Architecture",
+    "category": "Typography",
+    "description": "Font as Architecture",
+    "imageUrl": "https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&q=80&w=1200",
+    "date": "2024.09"
   },
   {
-    id: '6',
-    title: 'Ethereal Lab',
-    category: 'Brand Identity',
-    description: '미래지향적인 연구소를 위한 브랜딩 시스템. 로고부터 웹 인터페이스까지 아우르는 통합 디자인 솔루션입니다.',
-    imageUrl: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&q=80&w=1200',
-    date: '2024.08'
+    "id": "6",
+    "title": "Legendary Figures",
+    "category": "Brand Identity",
+    "description": "Legendary Figures",
+    "imageUrl": "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&q=80&w=1200",
+    "date": "2024.08"
   }
 ];
 
 export const INITIAL_NOTICES: Notice[] = [];
 
 export const DEFAULT_THEME: ThemeConfig = {
-  primaryColor: '#ffffff',
-  accentColor: '#ec4899', 
-  headingFont: 'serif',
-  siteName: 'JayKayPark_Design Lab.',
-  heroTitle: 'JayKayPark_Design Lab.',
-  heroTitleSize: 10,
-  heroSubtitle: 'Professional Designer & Artist Portfolio based in Seoul',
-  bioHeadline: 'Behind the Design Lab.',
-  bioContent: `J.Park은 시각 매체의 경계를 허무는 작업을 이어오고 있는 아티스트입니다.\n\n그는 현대 사회의 복잡함 속에서 '본질적인 단순함'을 발견하고, 이를 현대적인 미학으로 재해석하는 데 집중합니다.`,
-  profileImageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=800',
-  contactAddress: 'Seoul, Republic of Korea\nGangnam-gu, Dosan-daero 123',
-  adminId: 'admin',
-  adminPw: 'admin1234',
-  socialLinks: {
-    instagram: 'https://instagram.com/jpark_studio',
-    blog: 'https://blog.naver.com/jpark',
-    email: 'contact@jpark.studio',
-    phone: '+82 10-1234-5678'
+  "primaryColor": "#ffffff",
+  "accentColor": "#ec4899",
+  "headingFont": "sans",
+  "siteName": "JayKayPark_Design Lab.",
+  "heroTitle": "Visual Archiving",
+  "heroTitleSize": 10,
+  "heroSubtitle": "Professional Designer & Artist Portfolio based in Seoul",
+  "bioHeadline": "JayKayPark",
+  "bioContent": `As a researcher in visual communication design, I observe the order and rhythm embedded in personal, everyday life and in nature, translating the formative principles discovered within them into a language of design. Grounded in the belief that the seemingly complex contemporary world is ultimately composed of simple structures and relationships, I pursue a mode of visual thinking that removes unnecessary ornamentation and leaves only the essential core.
+
+In particular, I hold a deep interest in education through design, viewing design not merely as a final outcome but as a process of inquiry and thought. I believe that observations drawn from natural patterns, the flow of light, and ordinary objects in daily life cultivate in learners a renewed way of seeing and interpreting the world. My design worldview begins not with grand concepts but with small discoveries. From the veins of a leaf and the shadows swaying in the wind to the repetitive arrangements of signs and windows in the city, I learn about structure and balance, contrast and negative space.
+
+Based on this philosophy, I move fluidly between visual design and education, seeking a creative environment where sensory experience and rational analysis are in harmony. I see design as both learning how to see and adopting an attitude toward interpreting the world. Its point of departure always lies in the closest landscapes of all—nature and everyday life.
+
+PROFESSIONAL EXPERIENCES
+2017-Present. Professor, Dept. of Art Education, Chuncheon National University of Education, Korea.
+2023-2024. Visiting Scholar, Dept. of Teaching, Learning and Teacher Education, University of Nebraska, Lincoln, U.S.A. 
+2019-2020. Visiting Professor, Graduate School of Education, Ewha Womans University, Korea. 
+2002-2017. Associate Professor, Dept. of Visual Design, Yeonsung University, Korea. 
+2000–2016. Lecturer, Dept. of Applied arts, Graduate School of Hanyang University, Korea. 
+
+
+SOLO EXHIBITIONS
+2017.01. 5th Individual Exhibition, "Visualizing Korea 1", Any Gallery, Seoul, Korea.
+2015.05. 4th Individual Exhibition, "Chaosmos", Sowol Art Hall, Seoul, Korea.
+2015.04. 3rd Individual Exhibition, "Visualizing Nature", Pyeongchon Art Hall, Gyeonggi-do, Korea.
+2009.01. The 2nd Individual Exhibition, "Beyond Picture, Beyond Communication 2", Invitation to the Republic of Korea Civic Center, Tokyo Autonomous Region, Tokyo, Japan.
+2008.07. The 1st Solo Exhibition, “Beyond Picture, Beyond Communication 1”, Invited by the Korean Cultural Center, Embassy of the Republic of Korea in Japan, Main Exhibition Hall, Tokyo, Japan.`,
+  "profileImageUrl": "https://lh3.googleusercontent.com/d/1B6G8_965I27I853_oA1dd7228f2d",
+  "contactAddress": "Seoul, Republic of Korea\nGangnam-gu, Dosan-daero 123",
+  "adminId": "admin",
+  "adminPw": "admin1234",
+  "socialLinks": {
+    "instagram": "https://instagram.com/jpark_studio",
+    "blog": "https://blog.naver.com/jpark",
+    "email": "jkpark@cnue.ac.kr",
+    "phone": "+82 10-1234-5678"
   }
 };
 
 export const DEFAULT_SEO: SEOConfig = {
-  metaTitle: 'JayKayPark_Design Lab. | Official Archive',
-  metaDescription: '현대적이고 감각적인 J.Park의 디자인 아카이브입니다.',
-  keywords: '디자인, 포트폴리오, J.Park, 브랜딩, 사진, 디지털아트',
+  "metaTitle": "JayKayPark_Design Lab. | Art & Design Archive",
+  "metaDescription": "JayKayPark_Design Lab.",
+  "keywords": "디자인, 포트폴리오, J.Park, 브랜딩, 사진, 디지털아트"
 };

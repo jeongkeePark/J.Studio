@@ -1,7 +1,7 @@
 
 import React, { useState, useRef } from 'react';
 import { Project, ThemeConfig, SEOConfig } from '../types';
-import { LayoutGrid, Palette, Globe, Plus, Trash2, Edit2, X, Settings, User, Upload, Loader2, Lock, ArrowRight, Instagram, Mail, Video, Phone, Link as LinkIcon, ShieldCheck } from 'lucide-react';
+import { LayoutGrid, Palette, Globe, Plus, Trash2, Edit2, X, Settings, User, Upload, Loader2, Lock, ArrowRight, Instagram, Mail, Video, Phone, Link as LinkIcon, ShieldCheck, Download, Copy, Check } from 'lucide-react';
 
 interface AdminProps {
   projects: Project[];
@@ -20,6 +20,7 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
   const [activeTab, setActiveTab] = useState<'projects' | 'bio' | 'theme' | 'seo' | 'account'>('projects');
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [copySuccess, setCopySuccess] = useState(false);
   
   const projectFileRef = useRef<HTMLInputElement>(null);
   const videoFileRef = useRef<HTMLInputElement>(null);
@@ -74,7 +75,7 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
   };
 
   const handleAddProject = () => {
-    const newProject: Project = { id: Date.now().toString(), title: 'New Work', category: 'Category', description: '', imageUrl: 'https://images.unsplash.com/photo-1515238152791-8216bfdf89a7?auto=format&fit=crop&q=80&w=1200', gallery: [], date: '2024.01' };
+    const newProject: Project = { id: Date.now().toString(), title: 'New Work', category: 'Category', description: '', imageUrl: 'https://images.unsplash.com/photo-1515238152791-8216bfdf89a7?auto=format&fit=crop&q=80&w=1200', gallery: [], date: '2025.01' };
     setProjects(prev => [newProject, ...prev]);
     setEditingProject(newProject);
   };
@@ -82,6 +83,17 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
   const handleUpdateProject = (updated: Project) => {
     setProjects(prev => prev.map(p => p.id === updated.id ? updated : p));
     setEditingProject(null);
+  };
+
+  const handleExportConfig = () => {
+    const config = {
+      projects,
+      theme,
+      seo
+    };
+    navigator.clipboard.writeText(JSON.stringify(config, null, 2));
+    setCopySuccess(true);
+    setTimeout(() => setCopySuccess(false), 3000);
   };
 
   const handleAddGalleryImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -260,9 +272,15 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
 
           {activeTab === 'account' && (
             <div className="space-y-12">
-              <h3 className="text-3xl font-black border-b pb-6 flex items-center gap-4">
-                <ShieldCheck size={32} /> Security Settings
-              </h3>
+              <div className="flex justify-between items-center border-b pb-6">
+                <h3 className="text-3xl font-black flex items-center gap-4">
+                  <ShieldCheck size={32} /> Security Settings
+                </h3>
+                <button onClick={handleExportConfig} className="flex items-center gap-3 bg-blue-500 text-white px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg hover:scale-105 transition-transform">
+                   {copySuccess ? <Check size={16} /> : <Copy size={16} />}
+                   {copySuccess ? 'Copied to Clipboard' : 'Export Deployment Config'}
+                </button>
+              </div>
               <div className="max-w-md space-y-8 bg-gray-50/50 p-8 rounded-xl border border-dashed border-gray-200">
                 <p className="text-xs text-gray-500 font-light leading-relaxed">Customize your administrative access. These credentials will be required for future logins to this panel.</p>
                 <div className="space-y-6">
@@ -276,7 +294,7 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
                   </div>
                 </div>
                 <div className="pt-4">
-                  <p className="text-[8px] text-gray-400 italic">* Changes are saved automatically to your local storage.</p>
+                  <p className="text-[8px] text-gray-400 italic">* Changes are saved automatically to your local storage. Use "Export" to get code for constants.tsx.</p>
                 </div>
               </div>
             </div>
