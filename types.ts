@@ -26,6 +26,7 @@ export interface ThemeConfig {
   heroTitle: string;
   heroTitleSize: number;
   heroSubtitle: string;
+  bioHeadline: string;
   bioContent: string;
   profileImageUrl: string;
   contactAddress: string;

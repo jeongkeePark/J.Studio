@@ -63,6 +63,7 @@ export const DEFAULT_THEME: ThemeConfig = {
   heroTitle: 'JayKayPark_Design Lab.',
   heroTitleSize: 10,
   heroSubtitle: 'Professional Designer & Artist Portfolio based in Seoul',
+  bioHeadline: 'Behind the Design Lab.',
   bioContent: `J.Park은 시각 매체의 경계를 허무는 작업을 이어오고 있는 아티스트입니다.\n\n그는 현대 사회의 복잡함 속에서 '본질적인 단순함'을 발견하고, 이를 현대적인 미학으로 재해석하는 데 집중합니다.`,
   profileImageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=800',
   contactAddress: 'Seoul, Republic of Korea\nGangnam-gu, Dosan-daero 123',

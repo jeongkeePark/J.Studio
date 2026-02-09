@@ -28,7 +28,6 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Compare against customizable theme credentials
     if (loginId === theme.adminId && loginPw === theme.adminPw) {
       setIsLoggedIn(true); 
       sessionStorage.setItem('jp_admin_auth', 'true');
@@ -200,8 +199,12 @@ const Admin: React.FC<AdminProps> = ({ projects, setProjects, theme, setTheme, s
                 </div>
                 <div className="md:col-span-8 space-y-8">
                   <div className="space-y-2">
+                    <label className="text-[9px] font-black uppercase text-gray-400">Biography Headline</label>
+                    <input type="text" value={theme.bioHeadline} onChange={e => setTheme({...theme, bioHeadline: e.target.value})} className="w-full p-4 border bg-gray-50/30 outline-none focus:border-black transition-colors font-bold" />
+                  </div>
+                  <div className="space-y-2">
                     <label className="text-[9px] font-black uppercase text-gray-400">Narrative Bio</label>
-                    <textarea rows={12} value={theme.bioContent} onChange={e => setTheme({...theme, bioContent: e.target.value})} className="w-full p-8 border bg-gray-50/30 outline-none focus:border-black transition-colors leading-loose text-sm font-light resize-none" />
+                    <textarea rows={10} value={theme.bioContent} onChange={e => setTheme({...theme, bioContent: e.target.value})} className="w-full p-8 border bg-gray-50/30 outline-none focus:border-black transition-colors leading-loose text-sm font-light resize-none" />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[9px] font-black uppercase text-gray-400">Physical Studio Location</label>

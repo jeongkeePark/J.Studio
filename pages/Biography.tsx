@@ -24,8 +24,7 @@ const Biography: React.FC<BiographyProps> = ({ theme }) => {
                 Biography
               </p>
               <h1 className="text-6xl md:text-8xl font-black mb-12 leading-tight tracking-tighter">
-                Behind the<br />
-                {theme.siteName}
+                {theme.bioHeadline}
               </h1>
             </div>
 
