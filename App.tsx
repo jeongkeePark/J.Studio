@@ -227,14 +227,20 @@ const NavLink: React.FC<{ to: string, children: React.ReactNode, accentColor: st
 const App: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>(INITIAL_PROJECTS);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  
+  // MERGE LOGIC: Ensures new default fields (like adminId/Pw) exist even if user has an old saved theme
   const [theme, setTheme] = useState<ThemeConfig>(() => {
     const saved = localStorage.getItem('jp_theme');
-    return saved ? JSON.parse(saved) : DEFAULT_THEME;
+    const parsed = saved ? JSON.parse(saved) : {};
+    return { ...DEFAULT_THEME, ...parsed };
   });
+
   const [seo, setSeo] = useState<SEOConfig>(() => {
     const saved = localStorage.getItem('jp_seo');
-    return saved ? JSON.parse(saved) : DEFAULT_SEO;
+    const parsed = saved ? JSON.parse(saved) : {};
+    return { ...DEFAULT_SEO, ...parsed };
   });
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => { 
